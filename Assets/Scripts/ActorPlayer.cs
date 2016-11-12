@@ -5,7 +5,7 @@ public class ActorPlayer : Actor {
 	
 	
 	private static float JUMP_FORCE = 300;
-	private static int JUMPS = 2;
+	private static int JUMPS = 5;
 	
 	
 	private int jumps;
@@ -49,6 +49,14 @@ public class ActorPlayer : Actor {
 			jumps = JUMPS;
 		}
 	}
+	
+	void OnCollisionStay2D(Collision2D collision) {
+        foreach (ContactPoint2D contact in collision.contacts) {
+            //print(contact.collider.name + " hit " + contact.otherCollider.name);
+			print ( contact.normal);
+            Debug.DrawRay(contact.point, contact.normal, Color.red);
+        }
+    }
 	
 	
 	
