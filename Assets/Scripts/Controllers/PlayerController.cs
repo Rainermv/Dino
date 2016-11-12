@@ -3,13 +3,12 @@ using System.Collections;
 
 public class PlayerController : MonoBehaviour {
 	
-	private ActorPlayer playerAvatar;
-	
-	
+	private PlayerComponent playerAvatar;
 	
 	void Awake(){
 		
-		playerAvatar = GameObject.FindWithTag("PLAYER").GetComponent<ActorPlayer>();
+		// No futuro, criar o personagem dinamicamente e guardar referência do seu model
+		playerAvatar = GameObject.FindWithTag("PLAYER").GetComponent<PlayerComponent>();
 		
 	}
 
@@ -32,11 +31,6 @@ public class PlayerController : MonoBehaviour {
 			Vector3 position = Input.mousePosition;
 			playerAvatar.PlayerJump();
 		}
-		
-		
-				
-		
-		
-		
+
 	}
 }

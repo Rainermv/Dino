@@ -3,6 +3,8 @@ using System.Collections;
 
 public class ObjectFactory  {
 
+	private int id = 0;
+
 	private SpriteLibrary spriteLibrary;
 
 	private static ObjectFactory instance;
@@ -15,38 +17,42 @@ public class ObjectFactory  {
 		return instance;
 	}
 	
-	public GameObject buildBox(Vector2 position){
+	public ActorComponent buildActor(Vector2 position){
 	
 		spriteLibrary = SpriteLibrary.getInstance();
 
 		// Get the object information
-		Obstacle obstacleModel = new ObstacleBox();
-		Sprite newSprite = spriteLibrary.getSprite(obstacleModel.spriteKey);
-		
+		Actor actorModel = new ObstacleBox();
+		Sprite newSprite = spriteLibrary.getSprite(actorModel.spriteKey);
+
 		// Create the game Object
-		GameObject obstacleGameObject = new GameObject();
-		obstacleGameObject.name = obstacleModel.name;
+		GameObject actorGameObject = new GameObject();
+		actorGameObject.name = actorModel.name + " " + id++;
+		actorGameObject.tag = actorModel.tag;
+
+		actorGameObject.layer = actorModel.layer;
 		
-		obstacleGameObject.transform.position = position;
-		obstacleGameObject.transform.localScale = obstacleModel.size;
-		
+		actorGameObject.transform.position = position;
+		actorGameObject.transform.localScale = actorModel.size;
+
 		// Add the sprite renderer
-		SpriteRenderer spriteRendererComponent = obstacleGameObject.AddComponent<SpriteRenderer>();
+		SpriteRenderer spriteRendererComponent = actorGameObject.AddComponent<SpriteRenderer>();
 		spriteRendererComponent.sprite = newSprite;	
 		
 		// Add the collider
-		BoxCollider2D collider = obstacleGameObject.AddComponent<BoxCollider2D>();
+		BoxCollider2D collider = actorGameObject.AddComponent<BoxCollider2D>();
 		collider.size = new Vector2 (1,1);		
 		
 		// Add the Rigidbody component
-		Rigidbody2D rb = obstacleGameObject.AddComponent<Rigidbody2D>();
-		rb.isKinematic = obstacleModel.isKinematic;
+		Rigidbody2D rb = actorGameObject.AddComponent<Rigidbody2D>();
+		rb.isKinematic = actorModel.isKinematic;
+
+		// Add the Obstacle component
+		ActorComponent actorComponent = actorGameObject.AddComponent<ActorComponent>();
+		//actorComponent.setSpeed( actorModel.velocity );
+		actorComponent.actor = actorModel;
 		
-		// Add the Actor component
-		ActorObstacle actor = obstacleGameObject.AddComponent<ActorObstacle>();
-		actor.setSpeed( obstacleModel.velocity );
-		
-		return obstacleGameObject;
+		return actorComponent;
 			
 	}
 	

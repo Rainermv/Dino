@@ -1,7 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Obstacle {
+public abstract class Actor {
+
+	public string tag;
+	public int layer;
+
+	public Color tint;
 	
 	public string name;
 	public string spriteKey;
@@ -10,4 +15,6 @@ public class Obstacle {
 	//public bool useGravity;
 	public bool isKinematic;
 	public Vector2 velocity;
+
+	public bool affectedByWorldMovement;
 }
