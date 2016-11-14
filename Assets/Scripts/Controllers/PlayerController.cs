@@ -4,11 +4,20 @@ using System.Collections;
 public class PlayerController : MonoBehaviour {
 	
 	private PlayerComponent playerAvatar;
+
+	public PlayerComponent PlayerAvatar {
+		get {
+			return playerAvatar;
+		}
+		set {
+			playerAvatar = value;
+		}
+	}
 	
 	void Awake(){
 		
 		// No futuro, criar o personagem dinamicamente e guardar referência do seu model
-		playerAvatar = GameObject.FindWithTag("PLAYER").GetComponent<PlayerComponent>();
+		//playerAvatar = GameObject.FindWithTag("PLAYER").GetComponent<PlayerComponent>();
 		
 	}
 

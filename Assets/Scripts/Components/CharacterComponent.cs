@@ -20,8 +20,8 @@ public class CharacterComponent : ActorComponent {
 
 		RaycastHit2D cast = Physics2D.Linecast (transform.position, getBounds ().min * 1.1f, mask.value);
 
-		if (cast.collider.tag == "FLOOR") {
-			print ("colliding");
+		if (cast.collider != null && cast.collider.tag == "FLOOR") {
+			//print ("colliding");
 			return true;
 		}
 

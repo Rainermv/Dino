@@ -11,8 +11,11 @@ public class ActorComponent : MonoBehaviour {
 	protected World world;
 	public Actor actor;
 
+	private Vector3 oldPosition;
 
-	Vector2 moveVector;
+	public Vector3 velocity;
+
+	public Vector2 moveVector = Vector2.zero;
 				
 	protected virtual void Awake(){
 		
@@ -26,13 +29,19 @@ public class ActorComponent : MonoBehaviour {
 	// Use this for initialization
 	protected virtual void Start () {
 
-
+		oldPosition = transform.position;
 	
 	}
 	
 	// Update is called once per frame
 	protected virtual void Update () {
-	
+		calculateVelocity ();
+	}
+
+	private void calculateVelocity(){
+
+		velocity = (transform.position - oldPosition) * Time.deltaTime;
+		oldPosition = transform.position;
 	}
 	
 	protected virtual void FixedUpdate () {
@@ -61,6 +70,10 @@ public class ActorComponent : MonoBehaviour {
 	}
 
 	protected virtual void OnCollisionExit2D(Collision2D collision){
+
+	}
+
+	protected virtual void OnCollisionStay2D(Collision2D collision){
 
 	}
 

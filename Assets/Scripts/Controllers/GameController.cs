@@ -2,10 +2,12 @@
 using System.Collections;
 using System.Collections.Generic;
 
+[RequireComponent (typeof (PlayerController))]
 public class GameController : MonoBehaviour {
 	
 	private ObjectFactory objFactory;
 	private World world;
+	private PlayerController playerController;
 
 	float multiplier = 0.1f;
 	
@@ -16,6 +18,8 @@ public class GameController : MonoBehaviour {
 	
 		objFactory = ObjectFactory.getInstance();
 		world = World.getInstance();
+
+		playerController = GetComponent<PlayerController> ();
 	
 	}
 		
@@ -27,6 +31,10 @@ public class GameController : MonoBehaviour {
 
 		routineMultiply = RoutineMultiply(world.MULT_TIMER);
 		StartCoroutine(routineMultiply);
+
+		Physics2D.gravity = world.GRAVITY;
+
+		playerController.PlayerAvatar = objFactory.buildPlayer ();
 	
 	}
 	
@@ -40,10 +48,6 @@ public class GameController : MonoBehaviour {
 
 		world.update ();
 
-
-
-		//world.TRAVEL_DISTANCE.x world.OBSTACLE_FREQUENCY);
-
 	}
 
 	// every 2 seconds perform the action
@@ -55,14 +59,11 @@ public class GameController : MonoBehaviour {
 
 			yield return new WaitForSeconds(waitTime);
 
-			print (world.TRAVEL_DISTANCE);
-
+			//print (world.TRAVEL_DISTANCE);
+		
 			if ( world.TRAVEL_DISTANCE >= world.OBSTACLE_FREQUENCY * ticks){
-				float x = world.X_SPAWN;
-				float y = Random.Range(world.SCREEN_BOTTOM, world.SCREEN_TOP);
-				//float y = Random.Range(0, world.SCREEN_TOP);
-				ActorComponent obstacle = InstantiateActor(new Vector3 (x,y,0));
-
+				
+				ActorComponent obstacle = objFactory.buildActor();
 				AdjustToBounds (obstacle);
 
 				ticks += 1;
@@ -85,22 +86,14 @@ public class GameController : MonoBehaviour {
     private IEnumerator RoutineCreateOther(float waitTime) {
         while (true) {
             yield return new WaitForSeconds(waitTime);
-			
-			float x = world.X_SPAWN;
-			float y = Random.Range(world.SCREEN_BOTTOM, world.SCREEN_TOP);
-			//float y = Random.Range(0, world.SCREEN_TOP);
-			ActorComponent obstacle = InstantiateActor(new Vector3 (x,y,0));
+
+			ActorComponent obstacle = objFactory.buildActor();
 
 			AdjustToBounds (obstacle);
 
         }
     }
-
-	ActorComponent InstantiateActor(Vector3 position){
 		
-		return objFactory.buildActor(position);
-
-	}
 
 	void AdjustToBounds(ActorComponent obj){
 
@@ -109,11 +102,11 @@ public class GameController : MonoBehaviour {
 
 
 		float diff = 0;
-		if (max > world.SCREEN_TOP) {
-			diff = world.SCREEN_TOP - max;
+		if (max > world.CELLING_Y) {
+			diff = world.CELLING_Y - max;
 		}
-		else if (min < world.SCREEN_BOTTOM){
-			diff = world.SCREEN_BOTTOM - min;
+		else if (min < world.FLOOR_Y){
+			diff = world.FLOOR_Y - min;
 		}
 
 		obj.transform.Translate (0, diff, 0);

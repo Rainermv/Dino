@@ -24,8 +24,14 @@ public class SpriteLibrary  {
 	}
 	
 	public Sprite getSprite(string key){
+
+		if (spriteDictionary.ContainsKey(key)){
+			return spriteDictionary[key];
+		}
 		
-		return spriteDictionary[key];
+		Debug.LogError("SpriteLibrary: image with key " + key + " not found!!");
+
+		return null;
 	
 	}
 }
