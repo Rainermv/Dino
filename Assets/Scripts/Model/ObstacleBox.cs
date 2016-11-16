@@ -5,7 +5,7 @@ public class ObstacleBox : Actor {
 
 	public ObstacleBox() {
 		
-		this.tag = "FLOOR";
+		this.tag = "PLATFORM";
 		this.layer = 7;
 
 		this.tint = Color.red;

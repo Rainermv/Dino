@@ -8,10 +8,12 @@ public class World {
 	public Vector2 GRAVITY = new Vector2 (0, -20);
 	
 	public Vector2 BASE_SPEED = new Vector2 (-5f, 0);
+	public float BASE_SPEED_ANIM_MULTIPLIER = 0.3f;
+
 	public float SPAWN_TIMER = 2;
 
-	public float MULTIPLIER = 1.1f;
-	public float MULT_TIMER = 30f;
+	public float DIFICULTY_MULTIPLIER = 1.1f;
+	public float DIFICULTY_MULTIPLIER_TIME = 5f;
 		
 	public float X_SPAWN = 10f;
 

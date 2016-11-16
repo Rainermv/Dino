@@ -1,17 +1,17 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.Experimental.Director;
 
 public class ObjectFactory  {
 
 	private int id = 0;
-	private SpriteLibrary spriteLibrary;
-
+	private _SpriteLibrary spriteLibrary;
 
 	#region SINGLETON
 
 	private static ObjectFactory instance;
 	private ObjectFactory(){
-		spriteLibrary = SpriteLibrary.getInstance();
+		spriteLibrary = _SpriteLibrary.getInstance();
 	}
 	public static ObjectFactory getInstance(){	
 		if (instance == null){
@@ -31,9 +31,13 @@ public class ObjectFactory  {
 
 		GameObject actorGameObject = createGameObject(playerModel);
 
+
+		Animator anim = addAnimator (actorGameObject, playerModel);
 		SpriteRenderer spriteRendererComponent = addSpriteRenderer(actorGameObject, playerModel);
 		BoxCollider2D collider = addBoxCollider2D(actorGameObject, playerModel);
 		Rigidbody2D rb = addRigidbody2D(actorGameObject, playerModel);
+
+
 
 		return addPlayerComponent(actorGameObject, playerModel);
 	}
@@ -77,6 +81,7 @@ public class ObjectFactory  {
 
 		SpriteRenderer sr = obj.AddComponent<SpriteRenderer>();
 		sr.sprite = Resources.Load<Sprite> ("Sprites/" + actor.spriteKey);
+		//sr.sprite = null;
 		sr.color = actor.tint;
 
 		return sr;
@@ -87,7 +92,7 @@ public class ObjectFactory  {
 
 		BoxCollider2D coll = obj.AddComponent<BoxCollider2D>();
 		coll.size = new Vector2 (1,1);		
-		coll.sharedMaterial = Resources.Load<PhysicsMaterial2D> ("PhysicsMaterial/" + actor.physicsMaterialKey);
+		coll.sharedMaterial = Resources.Load<PhysicsMaterial2D> ("PhysicsMaterials/" + actor.physicsMaterialKey);
 
 		return coll;
 
@@ -109,6 +114,20 @@ public class ObjectFactory  {
 
 
 		return rb;
+	}
+
+	private Animator addAnimator(GameObject obj, Character character){
+
+		Animator anim = obj.AddComponent<Animator> ();
+
+		//AnimationClip clip = Resources.Load<AnimationClip> ("Animations/" + character.name + "/" + character.animationKeys[0] );
+
+		//var clipPlayable = AnimationClipPlayable.Create (clip);
+
+		//anim.Play (clipPlayable);
+
+		return anim;
+
 	}
 
 	private ActorComponent addActorComponent(GameObject obj, Actor actor){

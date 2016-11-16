@@ -29,7 +29,7 @@ public class GameController : MonoBehaviour {
 		routineCreateObstacles = RoutineCreateObstacles(0.1f);
 		StartCoroutine(routineCreateObstacles);
 
-		routineMultiply = RoutineMultiply(world.MULT_TIMER);
+		routineMultiply = RoutineMultiply(world.DIFICULTY_MULTIPLIER_TIME);
 		StartCoroutine(routineMultiply);
 
 		Physics2D.gravity = world.GRAVITY;
@@ -75,8 +75,8 @@ public class GameController : MonoBehaviour {
 		while (true) {
 			yield return new WaitForSeconds(waitTime);
 
-			world.BASE_SPEED *= world.MULTIPLIER;
-			world.SPAWN_TIMER -= world.SPAWN_TIMER * world.MULTIPLIER;
+			world.BASE_SPEED *= world.DIFICULTY_MULTIPLIER;
+			world.SPAWN_TIMER -= world.SPAWN_TIMER * world.DIFICULTY_MULTIPLIER;
 
 
 		}

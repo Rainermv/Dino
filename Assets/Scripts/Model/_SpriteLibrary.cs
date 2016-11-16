@@ -2,19 +2,19 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class SpriteLibrary  {
+public class _SpriteLibrary  {
 
 	private Dictionary<string,Sprite> spriteDictionary = new Dictionary<string,Sprite>();
 
 	
 	// SINGLETON
-	private static SpriteLibrary instance;
-	private SpriteLibrary(){
+	private static _SpriteLibrary instance;
+	private _SpriteLibrary(){
 		
 	}
-	public static SpriteLibrary getInstance(){
+	public static _SpriteLibrary getInstance(){
 		if (instance == null){
-			instance = new SpriteLibrary();
+			instance = new _SpriteLibrary();
 		}
 		return instance;
 	}
