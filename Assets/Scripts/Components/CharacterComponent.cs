@@ -4,7 +4,7 @@ using UnityEngine.Experimental.Director;
 
 public class CharacterComponent : ActorComponent {
 
-	LayerMask mask = 9; // Character layer
+	//int ignoreMask = 8; // Character layer
 	RaycastHit2D[] raycasts;
 
 	Character character;
@@ -15,6 +15,8 @@ public class CharacterComponent : ActorComponent {
 	protected CharacterAnimationState state;
 
 	private RaycastHit2D floorCast;
+
+	private Vector2 floorRayOrigin;
 
 
 	// Use this for initialization
@@ -32,6 +34,8 @@ public class CharacterComponent : ActorComponent {
 		character = actor as Character;
 
 		SetState (character.initialState);
+
+		floorRayOrigin = new Vector2 (coll.offset.x, coll.bounds.min.y - transform.position.y);
 
 	}
 
@@ -61,10 +65,15 @@ public class CharacterComponent : ActorComponent {
 
 	bool raycastFloor() {
 
-		floorCast = Physics2D.Linecast (transform.position, getBounds ().min * 1.1f, mask.value);
+		Vector2 trvc2 = transform.position;
+		Vector2 rayOrigin = floorRayOrigin + trvc2; 
 
-		if (floorCast.collider != null && floorCast.collider.tag == "FLOOR") {
-			//print ("colliding");
+		floorCast = Physics2D.Linecast (rayOrigin, rayOrigin + (Vector2.down * 0.5f), 1 <<  Layers.FLOORS);
+
+		Debug.DrawLine (rayOrigin, rayOrigin + (Vector2.down * 0.5f), Color.yellow);
+
+		//if (floorCast.collider != null && (floorCast.collider.tag == "FLOOR" || floorCast.collider.tag == "PLATFORM")) {
+		if (floorCast.collider != null) {
 			return true;
 		}
 

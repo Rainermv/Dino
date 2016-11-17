@@ -10,13 +10,17 @@ public abstract class Actor {
 	public Vector2 startingPosition = Vector2.zero;
 
 	public string tag = "Default";
-	public int layer = 9;
+	public int layer = Layers.FLOORS;
 
 	public Color tint = Color.white;
 	
 	public string name = "Generic Actor";
 	public string spriteKey = "default";
-	public Vector2 size = new Vector2(1,1);
+
+	public Vector2 scale = new Vector2(1,1);
+	public Vector2 colliderSize = new Vector2(1,1);
+
+	public Vector2 colliderOffset = new Vector2(0,0);
 	
 	//public bool useGravity;
 	public bool isKinematic = false;
@@ -26,4 +30,5 @@ public abstract class Actor {
 	public string physicsMaterialKey = "Default";
 
 	public bool affectedByWorldMovement = true;
+
 }

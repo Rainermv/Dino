@@ -46,7 +46,7 @@ public class ObjectFactory  {
 	
 	public ActorComponent buildActor(){
 
-		Actor actorModel = new ObstacleBox();
+		Actor actorModel = new ObstaclePlatform();
 
 		GameObject actorGameObject = createGameObject(actorModel);
 
@@ -69,7 +69,7 @@ public class ObjectFactory  {
 		actorGameObject.layer = actor.layer;
 
 		actorGameObject.transform.position = actor.startingPosition;
-		actorGameObject.transform.localScale = actor.size;
+		actorGameObject.transform.localScale = actor.scale;
 
 		return actorGameObject;
 	}
@@ -91,7 +91,8 @@ public class ObjectFactory  {
 	private BoxCollider2D addBoxCollider2D(GameObject obj, Actor actor){
 
 		BoxCollider2D coll = obj.AddComponent<BoxCollider2D>();
-		coll.size = new Vector2 (1,1);		
+		coll.size = actor.colliderSize;
+		coll.offset = actor.colliderOffset;
 		coll.sharedMaterial = Resources.Load<PhysicsMaterial2D> ("PhysicsMaterials/" + actor.physicsMaterialKey);
 
 		return coll;

@@ -14,7 +14,7 @@ public class Player : Character  {
 	public Player(){
 
 		this.tag = "PLAYER";
-		this.layer = 8;
+		this.layer = this.layer = Layers.CHARACTERS;;
 
 		this.tint = Color.white;
 
@@ -26,11 +26,13 @@ public class Player : Character  {
 		this.initialState = CharacterAnimationState.RUN;
 
 
-		this.size = new Vector2(1 , 1);
+		//this.scale = new Vector2(1 , 1);
+		this.colliderSize = new Vector2(0.8f,1.5f);
+		this.colliderOffset = new Vector2(-0.3f,0f);
 
 		this.startingPosition = new Vector2( 
 			world.SCREEN_LEFT -2,
-			world.FLOOR_Y + size.y / 2
+			world.FLOOR_Y + scale.y / 2
 		);
 
 		stableXPosition = world.SCREEN_LEFT + world.SCREEN_WIDTH / 2;
