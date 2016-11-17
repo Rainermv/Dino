@@ -41,12 +41,10 @@ public class ObjectFactory  {
 
 		return addPlayerComponent(actorGameObject, playerModel);
 	}
-
-
-	
+		
 	public ActorComponent buildActor(){
 
-		Actor actorModel = new ObstaclePlatform();
+		Actor actorModel = new Platform();
 
 		GameObject actorGameObject = createGameObject(actorModel);
 
@@ -56,6 +54,33 @@ public class ObjectFactory  {
 
 		return addActorComponent(actorGameObject, actorModel);
 			
+	}
+
+	public ActorComponent buildAerialPlatform(){
+
+		Platform platformModel = Platform.AerialPlatform();
+
+		GameObject actorGameObject = createGameObject(platformModel);
+
+		foreach (PlatformTile tile in platformModel.tiles){
+			
+			GameObject tileGameObject = new GameObject();
+			tileGameObject.name = "platform tile - " + tile.tileId;
+
+			SpriteRenderer sr = tileGameObject.AddComponent<SpriteRenderer>();
+			sr.sprite = Resources.Load<Sprite> ("Sprites/Tiles/" + tile.tileId);
+
+			tileGameObject.transform.parent = actorGameObject.transform;
+			tileGameObject.transform.localPosition = tile.position;
+
+		}
+
+		//SpriteRenderer spriteRendererComponent = addSpriteRenderer(actorGameObject, platformModel);
+		BoxCollider2D collider = addBoxCollider2D(actorGameObject, platformModel);
+		Rigidbody2D rb = addRigidbody2D(actorGameObject, platformModel);
+
+		return addActorComponent(actorGameObject, platformModel);
+
 	}
 
 	#endregion
@@ -91,7 +116,9 @@ public class ObjectFactory  {
 	private BoxCollider2D addBoxCollider2D(GameObject obj, Actor actor){
 
 		BoxCollider2D coll = obj.AddComponent<BoxCollider2D>();
+
 		coll.size = actor.colliderSize;
+
 		coll.offset = actor.colliderOffset;
 		coll.sharedMaterial = Resources.Load<PhysicsMaterial2D> ("PhysicsMaterials/" + actor.physicsMaterialKey);
 

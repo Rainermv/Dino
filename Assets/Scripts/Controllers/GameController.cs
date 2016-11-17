@@ -9,7 +9,7 @@ public class GameController : MonoBehaviour {
 	private World world;
 	private PlayerController playerController;
 
-	float multiplier = 0.1f;
+	//float multiplier = 0.1f;
 	
 	private IEnumerator routineCreateObstacles;
 	private IEnumerator routineMultiply;
@@ -26,7 +26,7 @@ public class GameController : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		
-		routineCreateObstacles = RoutineCreateObstacles(0.1f);
+		routineCreateObstacles = RoutineCreatePlatforms(0.1f);
 		StartCoroutine(routineCreateObstacles);
 
 		routineMultiply = RoutineMultiply(world.DIFICULTY_MULTIPLIER_TIME);
@@ -51,7 +51,7 @@ public class GameController : MonoBehaviour {
 	}
 
 	// every 2 seconds perform the action
-	private IEnumerator RoutineCreateObstacles(float waitTime) {
+	private IEnumerator RoutineCreatePlatforms(float waitTime) {
 
 		float ticks = 0;
 
@@ -63,7 +63,7 @@ public class GameController : MonoBehaviour {
 		
 			if ( world.TRAVEL_DISTANCE >= world.OBSTACLE_FREQUENCY * ticks){
 				
-				ActorComponent obstacle = objFactory.buildActor();
+				ActorComponent obstacle = objFactory.buildAerialPlatform();
 				AdjustToBounds (obstacle);
 
 				ticks += 1;

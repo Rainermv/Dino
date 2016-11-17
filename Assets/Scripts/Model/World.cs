@@ -14,8 +14,6 @@ public class World {
 
 	public float DIFICULTY_MULTIPLIER = 1.1f;
 	public float DIFICULTY_MULTIPLIER_TIME = 5f;
-		
-	public float X_SPAWN = 10f;
 
 	public float SCREEN_TOP = -5f;
 	public float SCREEN_BOTTOM = 5f;
@@ -27,6 +25,9 @@ public class World {
 	public float SCREEN_LEFT = -9f;
 	public float SCREEN_RIGHT = 9f;
 	public float SCREEN_WIDTH;
+
+	public float X_SPAWN = 16f;
+	public float X_REMOVE = -16f;
 
 	public float TRAVEL_DISTANCE;
 

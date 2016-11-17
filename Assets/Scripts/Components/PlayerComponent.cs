@@ -27,8 +27,6 @@ public class PlayerComponent : CharacterComponent {
 	protected override void Update () {
 		base.Update();
 
-		print (player.isTouchingFloor);
-
 		if (state == CharacterAnimationState.RUN && player.isTouchingFloor == false) {
 			SetState(CharacterAnimationState.JUMP);
 		}

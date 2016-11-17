@@ -6,6 +6,7 @@ TagManager:
   tags:
   - PLAYER
   - FLOOR
+  - PLATFORM
   layers:
   - Default
   - TransparentFX

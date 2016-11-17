@@ -11,10 +11,6 @@ public class ActorComponent : MonoBehaviour {
 	protected World world;
 	public Actor actor;
 
-	private Vector3 oldPosition;
-
-	public Vector3 velocity;
-
 	public Vector2 moveVector = Vector2.zero;
 				
 	protected virtual void Awake(){
@@ -28,20 +24,18 @@ public class ActorComponent : MonoBehaviour {
 	
 	// Use this for initialization
 	protected virtual void Start () {
-
-		oldPosition = transform.position;
-	
+		
 	}
 	
 	// Update is called once per frame
 	protected virtual void Update () {
-		calculateVelocity ();
-	}
 
-	private void calculateVelocity(){
+		if (transform.position.x < world.X_REMOVE) {
 
-		velocity = (transform.position - oldPosition) * Time.deltaTime;
-		oldPosition = transform.position;
+			Destroy (gameObject);
+
+		}
+
 	}
 	
 	protected virtual void FixedUpdate () {

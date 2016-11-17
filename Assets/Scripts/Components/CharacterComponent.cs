@@ -40,6 +40,11 @@ public class CharacterComponent : ActorComponent {
 	}
 
 	protected void SetState(CharacterAnimationState newState){
+
+		if (currentAnimation.IsValid()) {
+			currentAnimation.Destroy ();
+		}
+
 		state = newState;
 		string animKey = character.animationKeys [state];
 		currentAnimation = AnimationFactory.getInstance ().loadAnimation (character.name, animKey);

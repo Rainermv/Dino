@@ -4,7 +4,6 @@ using System.Collections.Generic;
 
 public abstract class Character : Actor  {
 
-
 	public Dictionary<CharacterAnimationState, string> animationKeys = new Dictionary<CharacterAnimationState,string>();
 	public CharacterAnimationState initialState;
 
