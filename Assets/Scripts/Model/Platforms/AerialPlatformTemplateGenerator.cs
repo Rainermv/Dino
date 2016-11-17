@@ -22,10 +22,12 @@ public class AerialPlatformTemplateGenerator  {
 
 	private void Generate(){
 
+		//0 to 2
 		GenerateIceWall (1);
 		GenerateIceWall (2);
 		GenerateIceWall (3);
 
+		// 3 to 6
 		GenerateSnowPlatform (3);
 		GenerateSnowPlatform (4);
 		GenerateSnowPlatform (5);
@@ -65,9 +67,23 @@ public class AerialPlatformTemplateGenerator  {
 
 	public TileType[,] GetRandom(){
 
-		//return templates [1];
+		int index = 0;
 
-		return templates[ Random.Range(0, templates.Count)];
+		switch (World.getInstance().GENERATION_STRATEGY) {
+
+		case PlatformGenerationStrategy.Air:
+			index = Random.Range (3, 7);
+			break;
+		
+
+		case PlatformGenerationStrategy.Ground:
+			index = Random.Range (0, 3);
+			break;
+
+		
+		}
+
+		return templates[index];
 
 	}
 

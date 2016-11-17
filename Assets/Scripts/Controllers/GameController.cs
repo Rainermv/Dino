@@ -11,8 +11,8 @@ public class GameController : MonoBehaviour {
 
 	//float multiplier = 0.1f;
 	
-	private IEnumerator routineCreateObstacles;
-	private IEnumerator routineMultiply;
+	//private IEnumerator routineCreateObstacles;
+	//private IEnumerator routineMultiply;
 
 	void Awake(){
 	
@@ -25,16 +25,16 @@ public class GameController : MonoBehaviour {
 		
 	// Use this for initialization
 	void Start () {
-		
-		routineCreateObstacles = RoutineCreatePlatforms(0.1f);
-		StartCoroutine(routineCreateObstacles);
-
-		routineMultiply = RoutineMultiply(world.DIFICULTY_MULTIPLIER_TIME);
-		StartCoroutine(routineMultiply);
 
 		Physics2D.gravity = world.GRAVITY;
 
+		StartCoroutine(RoutineCreateAirPlatforms());
+		StartCoroutine(RoutineCreateGroundPlatforms());
+		StartCoroutine(RoutineMultiply(world.DIFICULTY_MULTIPLIER_TIME));
+
 		playerController.PlayerAvatar = objFactory.buildPlayer ();
+
+		CreateInitialPlatforms ();
 	
 	}
 	
@@ -50,24 +50,95 @@ public class GameController : MonoBehaviour {
 
 	}
 
-	// every 2 seconds perform the action
-	private IEnumerator RoutineCreatePlatforms(float waitTime) {
+	private void CreateInitialPlatforms(){
+
+		float min = world.SCREEN_LEFT;
+		float max = world.X_SPAWN;
+		float size = world.FLOOR_PLATFORM_SIZE;
+
+		//objFactory.buildGroundPlatform(FloorPlatformType.LEFT, min - size);
+
+		for (float pos = min - size;  pos < max + size;  pos+= size) {
+
+			objFactory.buildGroundPlatform(FloorPlatformType.CENTER, pos);
+
+		}
+
+		//objFactory.buildGroundPlatform(FloorPlatformType.RIGHT, max);
+
+	}
+
+	private IEnumerator RoutineCreateGroundPlatforms() {
 
 		float ticks = 0;
+		float chunkSize = 0;
 
 		while (true) {
 
-			yield return new WaitForSeconds(waitTime);
+			if (world.GENERATION_STRATEGY == PlatformGenerationStrategy.Ground) {
 
-			//print (world.TRAVEL_DISTANCE);
+				chunkSize = Random.Range (world.GROUND_CHUNK_MIN, world.GROUND_CHUNK_MAX);
+
+				float chunks = chunkSize;
+
+				while (chunks > 0) {
+
+					if (world.TRAVEL_DISTANCE >= world.FLOOR_PLATFORM_SIZE * ticks) {
+
+						//print (chunks);
+
+						FloorPlatformType type = FloorPlatformType.CENTER;
+
+						//if (chunks > 1 && chunks < chunkSize)
+						//	type = FloorPlatformType.CENTER;
+						
+						if (chunks <= 0)
+							type = FloorPlatformType.RIGHT;
+
+						//float position = ticks * world.FLOOR_PLATFORM_SIZE;
+
+						float diff = world.TRAVEL_DISTANCE - world.FLOOR_PLATFORM_SIZE * ticks;
+
+						print (diff);
+
+						ActorComponent obstacle = objFactory.buildGroundPlatform (type, world.X_SPAWN - diff);
+
+						ticks++;
+
+						if (world.GENERATION_STRATEGY != PlatformGenerationStrategy.Ground) {
+							chunks--;
+						}
+					}
+
+					yield return null;
+
+				}
+
+			} else {
+				yield return null;
+
+			}
+		}
+	}
+
+	// every 2 seconds perform the action
+	private IEnumerator RoutineCreateAirPlatforms() {
+
+		float airTicks = 0;
+		//float floorTicks = 0;
+
+		while (true) {
 		
-			if ( world.TRAVEL_DISTANCE >= world.OBSTACLE_FREQUENCY * ticks){
+			if ( world.TRAVEL_DISTANCE >= world.OBSTACLE_FREQUENCY * airTicks){
 				
-				ActorComponent obstacle = objFactory.buildAerialPlatform();
+				ActorComponent obstacle = objFactory.buildAirPlatform();
 				AdjustToBounds (obstacle);
 
-				ticks += 1;
+				airTicks += 1;
 			}
+
+			yield return null;
+
 		}
 	}
 

@@ -18,7 +18,6 @@ public class CharacterComponent : ActorComponent {
 
 	private Vector2 floorRayOrigin;
 
-
 	// Use this for initialization
 	protected override void Awake () {
 		base.Awake ();
@@ -35,7 +34,10 @@ public class CharacterComponent : ActorComponent {
 
 		SetState (character.initialState);
 
-		floorRayOrigin = new Vector2 (coll.offset.x, coll.bounds.min.y - transform.position.y);
+		Bounds bounds = getBounds ();
+		Vector2 offset = colls [0].offset;
+
+		floorRayOrigin = new Vector2 (offset.x, bounds.min.y - transform.position.y);
 
 	}
 

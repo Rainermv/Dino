@@ -44,7 +44,7 @@ public class PlayerComponent : CharacterComponent {
 		if (transform.position.x < player.stableXPosition) {
 
 			//float maxDistance = Mathf.Abs (player.startingPosition) - Mathf.Abs (player.stableXPosition);
-			float distance =  Mathf.Abs(transform.position.x) - Mathf.Abs(player.stableXPosition);
+			float distance = player.stableXPosition - transform.position.x;
 			//print (distance);
 			float vel_x = player.recomposeXSpeed * distance / player.recomposeDistance;
 			//float vel_x = player.recomposeXSpeed;
@@ -88,11 +88,7 @@ public class PlayerComponent : CharacterComponent {
 				}
 			}
 		}
-
-		if (collision.gameObject.tag == "FLOOR") {
-
-			//rb.drag = player.floorDrag;
-		}
+			
 	}
 
 	protected override void OnCollisionExit2D(Collision2D collision){

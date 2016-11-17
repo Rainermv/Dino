@@ -32,10 +32,15 @@ public class ObjectFactory  {
 		GameObject actorGameObject = createGameObject(playerModel);
 
 
-		Animator anim = addAnimator (actorGameObject, playerModel);
-		SpriteRenderer spriteRendererComponent = addSpriteRenderer(actorGameObject, playerModel);
-		BoxCollider2D collider = addBoxCollider2D(actorGameObject, playerModel);
-		Rigidbody2D rb = addRigidbody2D(actorGameObject, playerModel);
+		addAnimator (actorGameObject, playerModel);
+		addSpriteRenderer(actorGameObject, playerModel);
+
+		foreach (ColliderInfo coll in playerModel.colliders) {
+			addCollider2D (actorGameObject, coll);
+		}
+
+
+		addRigidbody2D(actorGameObject, playerModel);
 
 
 
@@ -48,18 +53,27 @@ public class ObjectFactory  {
 
 		GameObject actorGameObject = createGameObject(actorModel);
 
-		SpriteRenderer spriteRendererComponent = addSpriteRenderer(actorGameObject, actorModel);
-		BoxCollider2D collider = addBoxCollider2D(actorGameObject, actorModel);
-		Rigidbody2D rb = addRigidbody2D(actorGameObject, actorModel);
+		addSpriteRenderer(actorGameObject, actorModel);
+		addCollider2D(actorGameObject, actorModel.colliders[0]);
+		addRigidbody2D(actorGameObject, actorModel);
 
 		return addActorComponent(actorGameObject, actorModel);
 			
 	}
 
-	public ActorComponent buildAerialPlatform(){
+	public ActorComponent buildAirPlatform(){
 
-		Platform platformModel = Platform.AerialPlatform();
+		return buildPlatform(Platform.AerialPlatform());
 
+	}
+
+	public ActorComponent buildGroundPlatform(FloorPlatformType type, float xPosition){
+
+		return buildPlatform(Platform.FloorPlatform(type, xPosition));
+	}
+
+	private ActorComponent buildPlatform(Platform platformModel){
+				
 		GameObject actorGameObject = createGameObject(platformModel);
 
 		foreach (PlatformTile tile in platformModel.tiles){
@@ -69,14 +83,18 @@ public class ObjectFactory  {
 
 			SpriteRenderer sr = tileGameObject.AddComponent<SpriteRenderer>();
 			sr.sprite = Resources.Load<Sprite> ("Sprites/Tiles/" + tile.tileId);
+			sr.sortingOrder = platformModel.depth;
 
 			tileGameObject.transform.parent = actorGameObject.transform;
 			tileGameObject.transform.localPosition = tile.position;
 
 		}
 
-		//SpriteRenderer spriteRendererComponent = addSpriteRenderer(actorGameObject, platformModel);
-		BoxCollider2D collider = addBoxCollider2D(actorGameObject, platformModel);
+		foreach (ColliderInfo coll in platformModel.colliders) {
+
+			addCollider2D(actorGameObject, coll);
+		}
+
 		Rigidbody2D rb = addRigidbody2D(actorGameObject, platformModel);
 
 		return addActorComponent(actorGameObject, platformModel);
@@ -103,25 +121,36 @@ public class ObjectFactory  {
 
 	private SpriteRenderer addSpriteRenderer(GameObject obj, Actor actor){
 
-
 		SpriteRenderer sr = obj.AddComponent<SpriteRenderer>();
 		sr.sprite = Resources.Load<Sprite> ("Sprites/" + actor.spriteKey);
 		//sr.sprite = null;
 		sr.color = actor.tint;
+		sr.sortingOrder = actor.depth;
 
 		return sr;
 
 	}
 
-	private BoxCollider2D addBoxCollider2D(GameObject obj, Actor actor){
+	private Collider2D addCollider2D(GameObject obj, ColliderInfo collInfo){
 
-		BoxCollider2D coll = obj.AddComponent<BoxCollider2D>();
+		Collider2D coll;
 
-		coll.size = actor.colliderSize;
+		if (collInfo.type == ColliderType.Box) {
 
-		coll.offset = actor.colliderOffset;
-		coll.sharedMaterial = Resources.Load<PhysicsMaterial2D> ("PhysicsMaterials/" + actor.physicsMaterialKey);
+			coll = obj.AddComponent<BoxCollider2D> ();
+			(coll as BoxCollider2D).size = collInfo.size;
 
+		} else if (collInfo.type == ColliderType.Circle) {
+
+			coll = obj.AddComponent<CircleCollider2D> ();
+			(coll as CircleCollider2D).radius = collInfo.size.x;
+		} else {
+			return null;
+		}
+
+		coll.offset = collInfo.offset;
+		coll.sharedMaterial = Resources.Load<PhysicsMaterial2D> ("PhysicsMaterials/" + collInfo.materialKey);
+	
 		return coll;
 
 	}

@@ -6,7 +6,7 @@ using System.Collections;
 public class ActorComponent : MonoBehaviour {
 	
 	protected Rigidbody2D rb;
-	protected Collider2D coll;
+	protected Collider2D[] colls;
 
 	protected World world;
 	public Actor actor;
@@ -16,7 +16,7 @@ public class ActorComponent : MonoBehaviour {
 	protected virtual void Awake(){
 		
 		rb = GetComponent<Rigidbody2D>();
-		coll =  GetComponent<Collider2D>();
+		colls =  GetComponents<Collider2D>();
 
 		world = World.getInstance();
 	}
@@ -74,7 +74,15 @@ public class ActorComponent : MonoBehaviour {
 
 	public Bounds getBounds(){
 
-		return coll.bounds;
+		Bounds bounds = new Bounds();
+
+		foreach (Collider2D coll in colls) {
+
+			bounds.Encapsulate (coll.bounds);
+
+		}
+
+		return bounds;
 
 	}
 

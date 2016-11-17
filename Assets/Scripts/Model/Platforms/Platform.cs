@@ -11,7 +11,7 @@ public class Platform : Actor {
 	public Platform() {
 
 		this.layer = Layers.FLOORS;
-		this.name = "Platform";
+
 		this.tag = "PLATFORM";
 		this.spriteKey = null;
 
@@ -25,10 +25,31 @@ public class Platform : Actor {
 		this.startingPosition = new Vector2( world.X_SPAWN, Random.Range(world.FLOOR_Y, world.CELLING_Y));
 	}
 
+	public void setToFloor(float xPosition){
+		this.startingPosition = new Vector2(xPosition, world.FLOOR_Y );
+	}
+
+	public static Platform FloorPlatform(FloorPlatformType type, float xPosition){
+
+		Platform floorPlatform = new Platform ();
+		floorPlatform.name = "GroundPlatform";
+		floorPlatform.depth = 7;
+
+		TileType[,] template = FloorPlatformTemplateGenerator.getInstance().Get(type);
+
+		floorPlatform.setWithTemplate (template);
+
+		floorPlatform.setToFloor (xPosition);
+
+		return floorPlatform;
+
+	}
 
 	public static Platform AerialPlatform(){
 
 		Platform aerialPlatform = new Platform ();
+		aerialPlatform.name = "AirPlatform";
+		aerialPlatform.depth = 3;
 
 		TileType[,] template = AerialPlatformTemplateGenerator.getInstance().GetRandom ();
 
@@ -62,14 +83,18 @@ public class Platform : Actor {
 			}
 		}
 
-		this.colliderSize = Vector2.zero;
+		ColliderInfo colliderInfo = new ColliderInfo ();
+		colliderInfo.type = ColliderType.Box;
+		colliderInfo.size = Vector2.zero;
 
 		for (int x = 0; x < width; x++) {
-			this.colliderSize.x += template [x, 0].size.x;
+			colliderInfo.size.x += template [x, 0].size.x;
 		}
 		for (int y = 0; y < height; y++) {
-			this.colliderSize.y += template [0, y].size.y;
+			colliderInfo.size.y += template [0, y].size.y;
 		}
+
+		colliders.Add (colliderInfo);
 
 	}
 		

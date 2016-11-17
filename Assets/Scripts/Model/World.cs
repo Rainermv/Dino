@@ -24,7 +24,9 @@ public class World {
 
 	public float SCREEN_LEFT = -9f;
 	public float SCREEN_RIGHT = 9f;
+
 	public float SCREEN_WIDTH;
+	public float SCREEN_MIDPOINT;
 
 	public float X_SPAWN = 16f;
 	public float X_REMOVE = -16f;
@@ -33,8 +35,17 @@ public class World {
 
 	public float OBSTACLE_FREQUENCY = 10;
 
+	public int GROUND_CHUNK_MIN = 4;
+	public int GROUND_CHUNK_MAX = 10;
+
+	public int FLOOR_PLATFORM_SIZE = 3;
+
+	public PlatformGenerationStrategy GENERATION_STRATEGY = PlatformGenerationStrategy.Ground;
+
 	private World(){
-		SCREEN_WIDTH = Mathf.Abs (SCREEN_LEFT) + Mathf.Abs (SCREEN_RIGHT);
+		//SCREEN_WIDTH = Mathf.Abs (SCREEN_LEFT) + Mathf.Abs (SCREEN_RIGHT);
+		SCREEN_WIDTH = SCREEN_RIGHT - SCREEN_LEFT;
+		SCREEN_MIDPOINT = SCREEN_LEFT + SCREEN_WIDTH / 2;
 	}
 	public static World getInstance(){
 		if (instance == null){

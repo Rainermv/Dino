@@ -1,5 +1,22 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+
+public enum ColliderType {
+
+	Box,
+	Circle
+
+}
+
+public class ColliderInfo{
+
+	public ColliderType type = ColliderType.Box;
+	public Vector2 size = new Vector2(1,1);
+	public Vector2 offset = new Vector2(0,0);
+	public string materialKey = "Default";
+
+}
 
 public abstract class Actor {
 
@@ -16,18 +33,20 @@ public abstract class Actor {
 	
 	public string name = "Generic Actor";
 	public string spriteKey = "default";
+	public int depth = 0;
 
 	public Vector2 scale = new Vector2(1,1);
-	public Vector2 colliderSize = new Vector2(1,1);
 
-	public Vector2 colliderOffset = new Vector2(0,0);
+	public List<ColliderInfo> colliders = new List<ColliderInfo> ();
+
+	//public Vector2 colliderSize = new Vector2(1,1);
+	//public Vector2 colliderOffset = new Vector2(0,0);
 	
 	//public bool useGravity;
 	public bool isKinematic = false;
 	public Vector2 velocity = Vector2.zero;
 	public bool constrainRotation = false;
 	public bool constrainMovement = false;
-	public string physicsMaterialKey = "Default";
 
 	public bool affectedByWorldMovement = true;
 
