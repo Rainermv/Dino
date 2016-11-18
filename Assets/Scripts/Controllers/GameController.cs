@@ -1,13 +1,18 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 
 [RequireComponent (typeof (PlayerController))]
 public class GameController : MonoBehaviour {
 	
-	private ObjectFactory objFactory;
+	private ActorFactory objFactory;
 	private World world;
 	private PlayerController playerController;
+
+	private ActorComponent bg;
+
+	public Text distanceScore;
 
 	//float multiplier = 0.1f;
 	
@@ -16,7 +21,7 @@ public class GameController : MonoBehaviour {
 
 	void Awake(){
 	
-		objFactory = ObjectFactory.getInstance();
+		objFactory = ActorFactory.getInstance();
 		world = World.getInstance();
 
 		playerController = GetComponent<PlayerController> ();
@@ -36,13 +41,16 @@ public class GameController : MonoBehaviour {
 
 		playerController.PlayerAvatar = objFactory.buildPlayer ();
 
+		bg = objFactory.buildActor (new Background ());
+
 		CreateInitialPlatforms ();
 	
 	}
 	
 	// Update is called once per frame
 	void Update () {
-	
+
+		distanceScore.text = "Distance: " + world.TRAVEL_DISTANCE.ToString("N0");
 	
 	}
 
@@ -197,5 +205,13 @@ public class GameController : MonoBehaviour {
 		}
 
 		obj.transform.Translate (0, diff, 0);
+	}
+
+	public void RestartGame(){
+
+		print ("click");
+
+		Application.LoadLevel(Application.loadedLevel);
+		World.restart ();
 	}
 }

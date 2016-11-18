@@ -16,8 +16,8 @@ public class World {
 	public float DIFICULTY_MULTIPLIER = 1.1f;
 	public float DIFICULTY_MULTIPLIER_TIME = 5f;
 
-	public float SCREEN_TOP = -5f;
-	public float SCREEN_BOTTOM = 5f;
+	public float SCREEN_TOP = 5f;
+	public float SCREEN_BOTTOM = -5f;
 	
 	public float FLOOR_Y = -4.5f;
 	public float CELLING_Y = 4.5f;
@@ -28,6 +28,9 @@ public class World {
 
 	public float SCREEN_WIDTH;
 	public float SCREEN_MIDPOINT;
+
+	public float SCREEN_DEATH_X;
+	public float SCREEN_DEATH_Y;
 
 	public float X_SPAWN = 16f;
 	public float X_REMOVE = -16f;
@@ -52,8 +55,12 @@ public class World {
 		SCREEN_WIDTH = SCREEN_RIGHT - SCREEN_LEFT;
 		SCREEN_MIDPOINT = SCREEN_LEFT + SCREEN_WIDTH / 2;
 
+		SCREEN_DEATH_X = SCREEN_LEFT - 2f;
+		SCREEN_DEATH_Y = SCREEN_BOTTOM - 5f;
+
 		GENERATION_STRATEGY_LIST.Add (PlatformGenerationStrategy.Ground);
 		GENERATION_STRATEGY_LIST.Add (PlatformGenerationStrategy.Air);
+
 
 	}
 
@@ -69,6 +76,13 @@ public class World {
 			instance = new World();
 		}
 		return instance;
+	}
+
+	public static World restart(){
+
+		instance = new World ();
+		return instance;
+
 	}
 
 	public void update(){

@@ -1,8 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-[RequireComponent (typeof (Rigidbody2D))]
-[RequireComponent (typeof (SpriteRenderer))]
 public class ActorComponent : MonoBehaviour {
 	
 	protected Rigidbody2D rb;
@@ -11,7 +9,7 @@ public class ActorComponent : MonoBehaviour {
 	protected World world;
 	public Actor actor;
 
-	public Vector2 moveVector = Vector2.zero;
+	//public Vector2 moveVector = Vector2.zero;
 				
 	protected virtual void Awake(){
 		
@@ -40,12 +38,21 @@ public class ActorComponent : MonoBehaviour {
 	
 	protected virtual void FixedUpdate () {
 
-		if (actor.affectedByWorldMovement) {
-		//moveVector = actor.velocity;
+		if (actor.affectedByWorldMovement){
 
-			rb.MovePosition (rb.position + moveVector + world.BASE_SPEED * Time.fixedDeltaTime);
-			//moveVector += world.BASE_SPEED;
+			if (actor.hasRigidbody) {
+			//moveVector = actor.velocity;
+
+				rb.MovePosition (rb.position + (world.BASE_SPEED * actor.worldMovementMultiplier) * Time.fixedDeltaTime);
+				//moveVector += world.BASE_SPEED;
+			}
+
+			//Vector2 move = transform.position + (world.BASE_SPEED * actor.worldMovementMultiplier) * Time.fixedDeltaTime;
+
+			//transform.position = transform.position + (world.BASE_SPEED * actor.worldMovementMultiplier) * Time.fixedDeltaTime;
+
 		}
+
 			
 
 		//this.rb.velocity = velocityVector;

@@ -51,6 +51,13 @@ public class PlayerComponent : CharacterComponent {
 		} else {
 			rb.velocity = new Vector2 (0, rb.velocity.y);
 		}
+			
+		if (transform.position.x < world.SCREEN_DEATH_X || transform.position.y < world.SCREEN_DEATH_Y) {
+
+			world.BASE_SPEED = Vector2.zero;
+			rb.velocity = Vector2.zero;
+
+		}
 
 	}
 
