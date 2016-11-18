@@ -41,7 +41,7 @@ public class PlayerComponent : CharacterComponent {
 	protected override void FixedUpdate () {
 		base.FixedUpdate();
 
-		if (transform.position.x < player.stableXPosition) {
+		if (transform.position.x < player.stableXPosition && player.isTouchingFloor) {
 
 			float distance = player.stableXPosition - transform.position.x;
 			float vel_x = player.recomposeXSpeed * distance / player.recomposeDistance;

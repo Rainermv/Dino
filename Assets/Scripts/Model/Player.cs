@@ -54,7 +54,7 @@ public class Player : Character  {
 
 
 
-		stableXPosition = world.SCREEN_MIDPOINT - 0.5f;
+		stableXPosition = world.SCREEN_MIDPOINT + world.SCREEN_WIDTH * 0.1f;
 
 		this.isKinematic = false;
 		this.velocity = new Vector2(0,0);
