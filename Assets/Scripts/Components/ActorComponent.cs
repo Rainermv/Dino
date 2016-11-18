@@ -9,6 +9,25 @@ public class ActorComponent : MonoBehaviour {
 	protected World world;
 	public Actor actor;
 
+	public Vector2 getSpriteSize(){
+
+		SpriteRenderer rend = GetComponent<SpriteRenderer> ();
+		Vector2 size = Vector2.zero;
+
+		if (rend != null) {
+
+			Bounds b = rend.bounds;
+
+			//size = new Vector2 (b.max.x - b.min.x, b.
+
+		}
+
+		return size;
+
+
+
+	}
+
 	//public Vector2 moveVector = Vector2.zero;
 				
 	protected virtual void Awake(){
@@ -41,15 +60,19 @@ public class ActorComponent : MonoBehaviour {
 		if (actor.affectedByWorldMovement){
 
 			if (actor.hasRigidbody) {
-			//moveVector = actor.velocity;
+				//moveVector = actor.velocity;
 
 				rb.MovePosition (rb.position + (world.BASE_SPEED * actor.worldMovementMultiplier) * Time.fixedDeltaTime);
 				//moveVector += world.BASE_SPEED;
+			} else {
+				Vector2 pos2d = transform.position;
+				transform.position = pos2d + (world.BASE_SPEED * actor.worldMovementMultiplier) * Time.fixedDeltaTime;
+
+				//transform.position = transform.position + (world.BASE_SPEED * actor.worldMovementMultiplier) * Time.fixedDeltaTime;
+
 			}
 
-			//Vector2 move = transform.position + (world.BASE_SPEED * actor.worldMovementMultiplier) * Time.fixedDeltaTime;
 
-			//transform.position = transform.position + (world.BASE_SPEED * actor.worldMovementMultiplier) * Time.fixedDeltaTime;
 
 		}
 
