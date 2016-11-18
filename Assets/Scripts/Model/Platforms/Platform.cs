@@ -86,6 +86,7 @@ public class Platform : Actor {
 		ColliderInfo colliderInfo = new ColliderInfo ();
 		colliderInfo.type = ColliderType.Box;
 		colliderInfo.size = Vector2.zero;
+		colliderInfo.offset = Vector2.zero;
 
 		for (int x = 0; x < width; x++) {
 			colliderInfo.size.x += template [x, 0].size.x;
@@ -93,6 +94,14 @@ public class Platform : Actor {
 		for (int y = 0; y < height; y++) {
 			colliderInfo.size.y += template [0, y].size.y;
 		}
+
+		for (int x = 0; x < width; x++) {
+			colliderInfo.offset.x += template [x, 0].offset.x * (template [x, 0].size.x / colliderInfo.size.x) ;
+		}
+		for (int y = 0; y < height; y++) {
+			colliderInfo.offset.y += template [0, y].offset.y * (template [0, y].size.y / colliderInfo.size.y) ;
+		}
+
 
 		colliders.Add (colliderInfo);
 

@@ -6,7 +6,8 @@ public enum FloorPlatformType {
 
 	LEFT,
 	CENTER,
-	RIGHT
+	RIGHT,
+	EMPTY
 
 }
 

@@ -30,7 +30,9 @@ public class GameController : MonoBehaviour {
 
 		StartCoroutine(RoutineCreateAirPlatforms());
 		StartCoroutine(RoutineCreateGroundPlatforms());
-		StartCoroutine(RoutineMultiply(world.DIFICULTY_MULTIPLIER_TIME));
+		StartCoroutine(RoutineIncreaseDifficulty());
+
+		StartCoroutine(RoutineManageStrategies());
 
 		playerController.PlayerAvatar = objFactory.buildPlayer ();
 
@@ -68,10 +70,34 @@ public class GameController : MonoBehaviour {
 
 	}
 
+	private IEnumerator RoutineManageStrategies() {
+
+		float ticks = 0;
+
+		while (true) {
+
+			if (world.TRAVEL_DISTANCE >= world.STRATEGY_CHANGE_FREQUENCY * ticks &&
+				Random.Range(0f,1f) < world.STRATEGY_CHANGE_CHANCE) {
+
+				world.randomStrategy ();
+
+				print ("NEW STRAT : " + world.GENERATION_STRATEGY);
+
+				ticks++;
+
+			}
+
+			yield return null;
+		}
+
+	}
+
 	private IEnumerator RoutineCreateGroundPlatforms() {
 
 		float ticks = 0;
 		float chunkSize = 0;
+
+		FloorPlatformType lastType = FloorPlatformType.CENTER;
 
 		while (true) {
 
@@ -81,33 +107,29 @@ public class GameController : MonoBehaviour {
 
 				float chunks = chunkSize;
 
-				while (chunks > 0) {
+				while (chunks >= 0) {
 
 					if (world.TRAVEL_DISTANCE >= world.FLOOR_PLATFORM_SIZE * ticks) {
 
-						//print (chunks);
-
 						FloorPlatformType type = FloorPlatformType.CENTER;
-
-						//if (chunks > 1 && chunks < chunkSize)
-						//	type = FloorPlatformType.CENTER;
+					
+						if (lastType == FloorPlatformType.EMPTY)
+							type = FloorPlatformType.LEFT;
 						
-						if (chunks <= 0)
+						if (chunks == 0 && lastType == FloorPlatformType.CENTER)
 							type = FloorPlatformType.RIGHT;
-
-						//float position = ticks * world.FLOOR_PLATFORM_SIZE;
 
 						float diff = world.TRAVEL_DISTANCE - world.FLOOR_PLATFORM_SIZE * ticks;
 
-						print (diff);
-
 						ActorComponent obstacle = objFactory.buildGroundPlatform (type, world.X_SPAWN - diff);
 
-						ticks++;
+						lastType = type;
 
 						if (world.GENERATION_STRATEGY != PlatformGenerationStrategy.Ground) {
 							chunks--;
 						}
+
+						ticks++;
 					}
 
 					yield return null;
@@ -115,6 +137,13 @@ public class GameController : MonoBehaviour {
 				}
 
 			} else {
+
+				if (world.TRAVEL_DISTANCE >= world.FLOOR_PLATFORM_SIZE * ticks) {
+					ticks++;
+
+					lastType = FloorPlatformType.EMPTY;
+				}
+
 				yield return null;
 
 			}
@@ -129,7 +158,7 @@ public class GameController : MonoBehaviour {
 
 		while (true) {
 		
-			if ( world.TRAVEL_DISTANCE >= world.OBSTACLE_FREQUENCY * airTicks){
+			if ( world.TRAVEL_DISTANCE >= world.PLATFORM_FREQUENCY * airTicks){
 				
 				ActorComponent obstacle = objFactory.buildAirPlatform();
 				AdjustToBounds (obstacle);
@@ -142,28 +171,15 @@ public class GameController : MonoBehaviour {
 		}
 	}
 
-	private IEnumerator RoutineMultiply(float waitTime) {
+	private IEnumerator RoutineIncreaseDifficulty() {
 		while (true) {
-			yield return new WaitForSeconds(waitTime);
+			yield return new WaitForSeconds(world.DIFICULTY_MULTIPLIER_TIME);
 
 			world.BASE_SPEED *= world.DIFICULTY_MULTIPLIER;
 			world.SPAWN_TIMER -= world.SPAWN_TIMER * world.DIFICULTY_MULTIPLIER;
 
-
 		}
 	}
-	
-	// every 2 seconds perform the action
-    private IEnumerator RoutineCreateOther(float waitTime) {
-        while (true) {
-            yield return new WaitForSeconds(waitTime);
-
-			ActorComponent obstacle = objFactory.buildActor();
-
-			AdjustToBounds (obstacle);
-
-        }
-    }
 		
 
 	void AdjustToBounds(ActorComponent obj){

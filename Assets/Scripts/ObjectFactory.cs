@@ -5,13 +5,11 @@ using UnityEngine.Experimental.Director;
 public class ObjectFactory  {
 
 	private int id = 0;
-	private _SpriteLibrary spriteLibrary;
 
 	#region SINGLETON
 
 	private static ObjectFactory instance;
 	private ObjectFactory(){
-		spriteLibrary = _SpriteLibrary.getInstance();
 	}
 	public static ObjectFactory getInstance(){	
 		if (instance == null){

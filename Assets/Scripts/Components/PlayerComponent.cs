@@ -43,11 +43,8 @@ public class PlayerComponent : CharacterComponent {
 
 		if (transform.position.x < player.stableXPosition) {
 
-			//float maxDistance = Mathf.Abs (player.startingPosition) - Mathf.Abs (player.stableXPosition);
 			float distance = player.stableXPosition - transform.position.x;
-			//print (distance);
 			float vel_x = player.recomposeXSpeed * distance / player.recomposeDistance;
-			//float vel_x = player.recomposeXSpeed;
 
 			rb.velocity = new Vector2 (vel_x, rb.velocity.y);
 

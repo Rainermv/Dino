@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class World {
 
@@ -33,20 +34,36 @@ public class World {
 
 	public float TRAVEL_DISTANCE;
 
-	public float OBSTACLE_FREQUENCY = 10;
+	public float PLATFORM_FREQUENCY = 8;
 
-	public int GROUND_CHUNK_MIN = 4;
-	public int GROUND_CHUNK_MAX = 10;
+	public int GROUND_CHUNK_MIN = 1;
+	public int GROUND_CHUNK_MAX = 3;
 
-	public int FLOOR_PLATFORM_SIZE = 3;
+	public int FLOOR_PLATFORM_SIZE = 5;
+
+	public List<PlatformGenerationStrategy> GENERATION_STRATEGY_LIST = new List<PlatformGenerationStrategy>();
 
 	public PlatformGenerationStrategy GENERATION_STRATEGY = PlatformGenerationStrategy.Ground;
+	public float STRATEGY_CHANGE_FREQUENCY = 25f;
+	public float STRATEGY_CHANGE_CHANCE = 0.5f;
 
 	private World(){
-		//SCREEN_WIDTH = Mathf.Abs (SCREEN_LEFT) + Mathf.Abs (SCREEN_RIGHT);
+		
 		SCREEN_WIDTH = SCREEN_RIGHT - SCREEN_LEFT;
 		SCREEN_MIDPOINT = SCREEN_LEFT + SCREEN_WIDTH / 2;
+
+		GENERATION_STRATEGY_LIST.Add (PlatformGenerationStrategy.Ground);
+		GENERATION_STRATEGY_LIST.Add (PlatformGenerationStrategy.Air);
+
 	}
+
+	public void randomStrategy(){
+
+		int id = Random.Range (0, GENERATION_STRATEGY_LIST.Count);
+		GENERATION_STRATEGY = GENERATION_STRATEGY_LIST [id];
+
+	}
+
 	public static World getInstance(){
 		if (instance == null){
 			instance = new World();
