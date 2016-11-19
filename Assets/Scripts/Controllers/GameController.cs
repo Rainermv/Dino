@@ -10,7 +10,7 @@ public class GameController : MonoBehaviour {
 	private World world;
 	private PlayerController playerController;
 
-	private ActorComponent bg;
+	private ActorComponent[] backgroundArray;
 
 	public Text distanceScore;
 
@@ -47,7 +47,13 @@ public class GameController : MonoBehaviour {
 
 		playerController.PlayerAvatar = objFactory.buildPlayer ();
 
-		bg = objFactory.buildActor (new Background ());
+
+		backgroundArray = new ActorComponent[3];
+		backgroundArray[0] = objFactory.buildActor (new Background ());
+		backgroundArray[1] = objFactory.buildActor (new Background ());
+		backgroundArray[2] = objFactory.buildActor (new Background ());
+
+		
 
 		CreateInitialPlatforms ();
 	
@@ -165,6 +171,34 @@ public class GameController : MonoBehaviour {
 
 			}
 		}
+	}
+
+	private IEnumerator RoutineParallaxBackground(){
+
+		float ticks = 0;
+
+		foreach (ActorComponent backgroundActor in backgroundArray) {
+
+			Transform t = backgroundActor.transform;
+			Background bg = backgroundActor.actor as Background;
+
+			//t.position = bg.startingPosition + new Vector2 ( t.
+		}
+
+		while (true) {
+
+			if ( world.TRAVEL_DISTANCE >= world.PLATFORM_FREQUENCY * ticks){
+
+
+
+				ticks += 1;
+			}
+
+			yield return null;
+
+		}
+
+
 	}
 
 	// every 2 seconds perform the action
