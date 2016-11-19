@@ -14,6 +14,10 @@ public class GameController : MonoBehaviour {
 
 	public Text distanceScore;
 
+	public bool createAirPlatforms = true;
+	public bool manageStrategies = true;
+	public bool increaseDifficulty = true;
+
 	//float multiplier = 0.1f;
 	
 	//private IEnumerator routineCreateObstacles;
@@ -32,12 +36,14 @@ public class GameController : MonoBehaviour {
 	void Start () {
 
 		Physics2D.gravity = world.GRAVITY;
+		StartCoroutine(RoutineCreateGroundPlatforms());
 
 		StartCoroutine(RoutineCreateAirPlatforms());
-		StartCoroutine(RoutineCreateGroundPlatforms());
+		StartCoroutine(RoutineManageStrategies());
 		StartCoroutine(RoutineIncreaseDifficulty());
 
-		StartCoroutine(RoutineManageStrategies());
+
+
 
 		playerController.PlayerAvatar = objFactory.buildPlayer ();
 
@@ -84,13 +90,16 @@ public class GameController : MonoBehaviour {
 
 		while (true) {
 
+
+
 			if (world.TRAVEL_DISTANCE >= world.STRATEGY_CHANGE_FREQUENCY * ticks &&
 				Random.Range(0f,1f) < world.STRATEGY_CHANGE_CHANCE) {
 
-				world.randomStrategy ();
+				if (manageStrategies){
+					world.randomStrategy ();
+				}
 
-				print ("NEW STRAT : " + world.GENERATION_STRATEGY);
-
+			
 				ticks++;
 
 			}
@@ -167,9 +176,11 @@ public class GameController : MonoBehaviour {
 		while (true) {
 		
 			if ( world.TRAVEL_DISTANCE >= world.PLATFORM_FREQUENCY * airTicks){
-				
-				ActorComponent obstacle = objFactory.buildAirPlatform();
-				AdjustToBounds (obstacle);
+
+				if (createAirPlatforms) {
+					ActorComponent obstacle = objFactory.buildAirPlatform ();
+					AdjustToBounds (obstacle);
+				}
 
 				airTicks += 1;
 			}
@@ -181,10 +192,13 @@ public class GameController : MonoBehaviour {
 
 	private IEnumerator RoutineIncreaseDifficulty() {
 		while (true) {
+
 			yield return new WaitForSeconds(world.DIFICULTY_MULTIPLIER_TIME);
 
-			world.BASE_SPEED *= world.DIFICULTY_MULTIPLIER;
-			world.SPAWN_TIMER -= world.SPAWN_TIMER * world.DIFICULTY_MULTIPLIER;
+			if (increaseDifficulty){
+				world.BASE_SPEED *= world.DIFICULTY_MULTIPLIER;
+				world.SPAWN_TIMER -= world.SPAWN_TIMER * world.DIFICULTY_MULTIPLIER;
+			}
 
 		}
 	}

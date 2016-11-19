@@ -5,7 +5,8 @@ using System.Collections.Generic;
 public enum ColliderType {
 
 	Box,
-	Circle
+	Circle,
+	Edge
 
 }
 

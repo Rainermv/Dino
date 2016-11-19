@@ -7,6 +7,8 @@ public class Platform : Actor {
 	public int width;
 	public int height;
 
+	public TileType[,] template;
+
 	public List<PlatformTile> tiles = new List<PlatformTile>();
 	public Platform() {
 
@@ -38,6 +40,8 @@ public class Platform : Actor {
 		TileType[,] template = FloorPlatformTemplateGenerator.getInstance().Get(type);
 
 		floorPlatform.setWithTemplate (template);
+		floorPlatform.addEdgeCollider ();
+		//floorPlatform.addBoxCollider ();
 
 		floorPlatform.setToFloor (xPosition);
 
@@ -54,6 +58,7 @@ public class Platform : Actor {
 		TileType[,] template = AerialPlatformTemplateGenerator.getInstance().GetRandom ();
 
 		aerialPlatform.setWithTemplate (template);
+		aerialPlatform.addBoxCollider ();
 
 		aerialPlatform.setRandomPosition ();
 
@@ -61,6 +66,8 @@ public class Platform : Actor {
 	}
 
 	void setWithTemplate(TileType[,] template){
+
+		this.template = template;
 
 		this.width = template.GetLength (0);
 		this.height = template.GetLength (1);
@@ -82,6 +89,41 @@ public class Platform : Actor {
 				this.tiles.Add(tile);
 			}
 		}
+			
+	}
+
+	public void addEdgeCollider(){
+
+		ColliderInfo colliderInfo = new ColliderInfo ();
+		colliderInfo.type = ColliderType.Edge;
+		colliderInfo.size = Vector2.zero;
+		colliderInfo.offset = Vector2.zero;
+
+		for (int x = 0; x < width; x++) {
+			colliderInfo.size.x += template [x, 0].size.x;
+		}
+
+		for (int y = 0; y < height; y++) {
+			colliderInfo.size.y += template [0, y].size.y;
+		}
+
+
+		for (int x = 0; x < width; x++) {
+			colliderInfo.offset.x += template [x, 0].offset.x * (template [x, 0].size.x / colliderInfo.size.x) ;
+		}
+
+
+		for (int y = 0; y < height -1; y++) {
+			colliderInfo.offset.y += template [0, y].size.y;
+		}
+		colliderInfo.offset.y += template [0, 0].size.y * 0.5f;
+
+		colliders.Add (colliderInfo);
+
+
+	}
+
+	public void addBoxCollider(){
 
 		ColliderInfo colliderInfo = new ColliderInfo ();
 		colliderInfo.type = ColliderType.Box;
@@ -101,8 +143,7 @@ public class Platform : Actor {
 		for (int y = 0; y < height; y++) {
 			colliderInfo.offset.y += template [0, y].offset.y * (template [0, y].size.y / colliderInfo.size.y) ;
 		}
-
-
+			
 		colliders.Add (colliderInfo);
 
 	}

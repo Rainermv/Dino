@@ -34,18 +34,19 @@ public class Player : Character  {
 
 		ColliderInfo boxCollider = new ColliderInfo ();
 		boxCollider.type = ColliderType.Box;
-		boxCollider.size = new Vector2(width,height * 0.8f);
-		boxCollider.offset = new Vector2(offset_x, 0);
+		boxCollider.size = new Vector2(width,height);
+		boxCollider.offset = new Vector2(offset_x, -0.1f);
 		boxCollider.materialKey = "Player";
+		colliders.Add (boxCollider);
 
+		/*
 		ColliderInfo circleCollider = new ColliderInfo ();
 		circleCollider.type = ColliderType.Circle;
 		circleCollider.size = new Vector2(width /2, 0);
 		circleCollider.offset = new Vector2(offset_x, - height / 3);
 		circleCollider.materialKey = "Player";
-
-		colliders.Add (boxCollider);
 		colliders.Add (circleCollider);
+		*/
 
 		this.startingPosition = new Vector2( 
 			world.SCREEN_LEFT -2,

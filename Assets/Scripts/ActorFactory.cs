@@ -146,6 +146,17 @@ public class ActorFactory  {
 
 			coll = obj.AddComponent<CircleCollider2D> ();
 			(coll as CircleCollider2D).radius = collInfo.size.x;
+		}
+		else if (collInfo.type == ColliderType.Edge) {
+
+			coll = obj.AddComponent<EdgeCollider2D> ();
+
+			Vector2[] points = new Vector2[2];
+			points [0] = new Vector2 (-collInfo.size.x /2, 0);
+			points [1] = new Vector2 ( collInfo.size.x /2, 0);
+
+			(coll as EdgeCollider2D).points = points;
+
 		} else {
 			return null;
 		}
