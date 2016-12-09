@@ -8,7 +8,8 @@ public class Background : Actor {
 		spriteKey = "Background/BG";
 		depth = 0;
 
-		worldMovementMultiplier = 0.5f;
+		//worldMovementMultiplier = 0.5f;
+		affectedByWorldMovement = false;
 
 		hasRigidbody = false;
 	}

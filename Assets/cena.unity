@@ -120,6 +120,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   distanceScore: {fileID: 1241502297}
+  createAirPlatforms: 1
+  manageStrategies: 0
+  increaseDifficulty: 0
 --- !u!4 &983328984
 Transform:
   m_ObjectHideFlags: 0

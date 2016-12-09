@@ -42,18 +42,12 @@ public class GameController : MonoBehaviour {
 		StartCoroutine(RoutineManageStrategies());
 		StartCoroutine(RoutineIncreaseDifficulty());
 
-
-
-
 		playerController.PlayerAvatar = objFactory.buildPlayer ();
-
 
 		backgroundArray = new ActorComponent[3];
 		backgroundArray[0] = objFactory.buildActor (new Background ());
-		backgroundArray[1] = objFactory.buildActor (new Background ());
-		backgroundArray[2] = objFactory.buildActor (new Background ());
-
-		
+		//backgroundArray[1] = objFactory.buildActor (new Background ());
+		//backgroundArray[2] = objFactory.buildActor (new Background ());
 
 		CreateInitialPlatforms ();
 	
@@ -81,9 +75,7 @@ public class GameController : MonoBehaviour {
 		//objFactory.buildGroundPlatform(FloorPlatformType.LEFT, min - size);
 
 		for (float pos = min - size;  pos < max + size;  pos+= size) {
-
 			objFactory.buildGroundPlatform(FloorPlatformType.CENTER, pos);
-
 		}
 
 		//objFactory.buildGroundPlatform(FloorPlatformType.RIGHT, max);
@@ -96,16 +88,13 @@ public class GameController : MonoBehaviour {
 
 		while (true) {
 
-
-
 			if (world.TRAVEL_DISTANCE >= world.STRATEGY_CHANGE_FREQUENCY * ticks &&
 				Random.Range(0f,1f) < world.STRATEGY_CHANGE_CHANCE) {
 
 				if (manageStrategies){
 					world.randomStrategy ();
 				}
-
-			
+					
 				ticks++;
 
 			}
@@ -189,8 +178,6 @@ public class GameController : MonoBehaviour {
 
 			if ( world.TRAVEL_DISTANCE >= world.PLATFORM_FREQUENCY * ticks){
 
-
-
 				ticks += 1;
 			}
 
@@ -212,10 +199,23 @@ public class GameController : MonoBehaviour {
 			if ( world.TRAVEL_DISTANCE >= world.PLATFORM_FREQUENCY * airTicks){
 
 				if (createAirPlatforms) {
-					ActorComponent obstacle = objFactory.buildAirPlatform ();
-					AdjustToBounds (obstacle);
-				}
+					ActorComponent platform = objFactory.buildAirPlatform ();
+					AdjustToBounds (platform);
 
+					if (Random.Range (0, 1) <= world.ENEMY_SPAWN_CHANCE_PLATFORMS) {
+
+						ActorComponent enemy = objFactory.buildEnemy ();
+
+						float platformSizeY = (platform.getColliders () [0] as BoxCollider2D).size.y;
+
+						BoxCollider2D enemyCollider = enemy.getColliders () [0] as BoxCollider2D;
+						float enemySizeY = enemyCollider.size.y;
+
+						enemy.transform.position = platform.transform.position;
+						enemy.transform.Translate (0, platformSizeY/2 + enemySizeY/2 - enemyCollider.offset.y, 0);							
+					}
+				}
+					
 				airTicks += 1;
 			}
 

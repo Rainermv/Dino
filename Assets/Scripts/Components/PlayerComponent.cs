@@ -5,6 +5,8 @@ public class PlayerComponent : CharacterComponent {
 
 	private Player player;
 
+	private Vector2 dynamicVelocity = Vector2.zero;
+
 	private ActorComponent floorTouched;
 			
 	protected override void Awake(){
@@ -46,10 +48,10 @@ public class PlayerComponent : CharacterComponent {
 			float distance = player.stableXPosition - transform.position.x;
 			float vel_x = player.recomposeXSpeed * distance / player.recomposeDistance;
 
-			rb.velocity = new Vector2 (vel_x, rb.velocity.y);
+			rb.velocity = new Vector2 (vel_x, rb.velocity.y) + dynamicVelocity;
 
 		} else {
-			rb.velocity = new Vector2 (0, rb.velocity.y);
+			rb.velocity = new Vector2 (0, rb.velocity.y) + dynamicVelocity;
 		}
 			
 		if (transform.position.x < world.SCREEN_DEATH_X || transform.position.y < world.SCREEN_DEATH_Y) {
@@ -58,6 +60,8 @@ public class PlayerComponent : CharacterComponent {
 			rb.velocity = Vector2.zero;
 
 		}
+
+		dynamicVelocity = Vector2.MoveTowards (dynamicVelocity, Vector2.zero, player.dynamicVelocityAdjust);
 
 	}
 
@@ -74,25 +78,44 @@ public class PlayerComponent : CharacterComponent {
 			player.jumps--;
 		}
 
-		
+
 	}
 	
 	protected override void OnCollisionEnter2D(Collision2D collision){
 		base.OnCollisionEnter2D(collision);
 
-		if (collision.gameObject.tag == "FLOOR" || collision.gameObject.tag == "PLATFORM"  ){
+		if (collision.gameObject.tag == "ENEMY") {
 
-			foreach (ContactPoint2D contact in collision.contacts) {
-				
-				// Get a jump if the player jump on the top of a floor
-				if (contact.normal.y >= 0.75){
-					player.jumps = player.maxJumps;
-					break;
-					//rb.drag = 1000;
-				}
+			float normalY = getContactNormal (collision).y;
+
+			if (normalY >= 0.5) {
+
+				ActionJump ();
+				player.jumps = player.maxJumps;
+
+			} else {
+				print ("pullback");
+				dynamicVelocity.x = collision.gameObject.GetComponent<EnemyComponent>().enemy.pullbackVelocity;
 			}
+
+		}
+
+		if (collision.gameObject.tag == "FLOOR" || collision.gameObject.tag == "PLATFORM"  ){
+					
+			// Get a jump if the player jump on the top of a floor
+			if (getContactNormal(collision).y >= 0.75){
+				player.jumps = player.maxJumps;
+				//rb.drag = 1000;
+			}
+		
 		}
 			
+	}
+
+	Vector3 getContactNormal(Collision2D collision){
+
+		return collision.contacts [0].normal;
+
 	}
 
 	protected override void OnCollisionExit2D(Collision2D collision){

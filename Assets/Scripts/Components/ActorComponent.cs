@@ -116,6 +116,10 @@ public class ActorComponent : MonoBehaviour {
 
 	}
 
+	public Collider2D[] getColliders(){
+		return colls;
+	}
+
 
 	/*
 	public void ActionJump(){

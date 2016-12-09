@@ -10,6 +10,7 @@ public class Player : Character  {
 	public float recomposeXSpeed;
 	public float recomposeDistance;
 
+	public float dynamicVelocityAdjust;
 
 	public Player(){
 
@@ -18,7 +19,7 @@ public class Player : Character  {
 
 		this.depth = 5;
 
-		this.tint = Color.white;
+		//this.tint = Color.white;
 
 		this.name = "Santa";
 		this.spriteKey = null;
@@ -32,36 +33,23 @@ public class Player : Character  {
 
 		float offset_x = -0.3f;
 
-		ColliderInfo boxCollider = new ColliderInfo ();
-		boxCollider.type = ColliderType.Box;
-		boxCollider.size = new Vector2(width,height);
-		boxCollider.offset = new Vector2(offset_x, -0.1f);
-		boxCollider.materialKey = "Player";
-		colliders.Add (boxCollider);
-
-		/*
-		ColliderInfo circleCollider = new ColliderInfo ();
-		circleCollider.type = ColliderType.Circle;
-		circleCollider.size = new Vector2(width /2, 0);
-		circleCollider.offset = new Vector2(offset_x, - height / 3);
-		circleCollider.materialKey = "Player";
-		colliders.Add (circleCollider);
-		*/
+		setCollider (new Vector2 (width, height), new Vector2 (offset_x, -0.1f));
 
 		this.startingPosition = new Vector2( 
 			world.SCREEN_LEFT -2,
 			world.FLOOR_Y + height
 		);
 
-
-
-		stableXPosition = world.SCREEN_MIDPOINT + world.SCREEN_WIDTH * 0.1f;
+		stableXPosition = world.SCREEN_MIDPOINT - world.SCREEN_WIDTH * 0.05f;
 
 		this.isKinematic = false;
 		this.velocity = new Vector2(0,0);
 
-		recomposeXSpeed = 2;
+		//recomposeXSpeed = 2;
+		recomposeXSpeed = 5;
 		recomposeDistance = 6;
+
+		dynamicVelocityAdjust = 1f;
 
 		affectedByWorldMovement = false;
 

@@ -29,20 +29,34 @@ public class ActorFactory  {
 
 		GameObject actorGameObject = createGameObject(playerModel);
 
-
 		addAnimator (actorGameObject, playerModel);
 		addSpriteRenderer(actorGameObject, playerModel);
 
 		foreach (ColliderInfo coll in playerModel.colliders) {
 			addCollider2D (actorGameObject, coll);
 		}
-
-
+			
 		addRigidbody2D(actorGameObject, playerModel);
 
-
-
 		return addPlayerComponent(actorGameObject, playerModel);
+	}
+
+	public EnemyComponent buildEnemy(){
+
+		Enemy enemyModel = new Enemy();
+
+		GameObject actorGameObject = createGameObject(enemyModel);
+
+		addAnimator (actorGameObject, enemyModel);
+		addSpriteRenderer(actorGameObject, enemyModel);
+
+		foreach (ColliderInfo coll in enemyModel.colliders) {
+			addCollider2D (actorGameObject, coll);
+		}
+
+		addRigidbody2D(actorGameObject, enemyModel);
+
+		return addEnemyComponent(actorGameObject, enemyModel);
 	}
 		
 	public ActorComponent buildActor(Actor actorModel){
@@ -207,6 +221,16 @@ public class ActorFactory  {
 		act.actor.id = id++;
 
 		return act;
+
+	}
+
+	private EnemyComponent addEnemyComponent(GameObject obj, Enemy actorEnemy){
+
+		EnemyComponent el = obj.AddComponent<EnemyComponent>();
+		el.actor = actorEnemy;
+		el.actor.id = id++;
+
+		return el;
 
 	}
 

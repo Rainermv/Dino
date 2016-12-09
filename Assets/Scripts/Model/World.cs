@@ -6,9 +6,9 @@ public class World {
 
 	private static World instance;
 
-	public Vector2 GRAVITY = new Vector2 (0, -20);
+	public Vector2 GRAVITY = new Vector2 (0, -15);
 	
-	public Vector2 BASE_SPEED = new Vector2 (-5f, 0);
+	public Vector2 BASE_SPEED = new Vector2 (-3f, 0);
 	public float BASE_SPEED_ANIM_MULTIPLIER = 0.3f;
 
 	public float SPAWN_TIMER = 2;
@@ -49,6 +49,8 @@ public class World {
 	public PlatformGenerationStrategy GENERATION_STRATEGY = PlatformGenerationStrategy.Ground;
 	public float STRATEGY_CHANGE_FREQUENCY = 25f;
 	public float STRATEGY_CHANGE_CHANCE = 0.5f;
+
+	public float ENEMY_SPAWN_CHANCE_PLATFORMS = 1f;
 
 	private World(){
 		

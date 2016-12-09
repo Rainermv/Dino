@@ -3,7 +3,9 @@
 public enum CharacterAnimationState
 {
 	RUN,
-	JUMP
+	JUMP,
+	IDLE,
+	DEAD
 }
 
 

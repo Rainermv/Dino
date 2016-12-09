@@ -10,4 +10,17 @@ public abstract class Character : Actor  {
 	public Vector2 jumpForce;
 	public bool isTouchingFloor = true;
 
+	protected void setCollider(Vector2 size, Vector2 colliderOffset){
+
+		ColliderInfo boxCollider = new ColliderInfo ();
+		boxCollider.type = ColliderType.Box;
+		//boxCollider.size = new Vector2(width,height);
+		boxCollider.size = size;
+		//boxCollider.offset = new Vector2(offset_x, -0.1f);
+		boxCollider.offset =colliderOffset;
+		boxCollider.materialKey = "Player";
+		colliders.Add (boxCollider);
+
+	}
+
 }
