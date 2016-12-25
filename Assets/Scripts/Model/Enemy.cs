@@ -20,11 +20,17 @@ public class Enemy : Character  {
 		this.name = "ZombieMale";
 		this.spriteKey = null;
 
-		this.animationKeys.Add(CharacterAnimationState.RUN, "zombie_walk");
-		this.animationKeys.Add(CharacterAnimationState.JUMP, "zombie_idle");
-		this.animationKeys.Add(CharacterAnimationState.IDLE, "zombie_idle");
-		this.animationKeys.Add(CharacterAnimationState.DEAD, "zombie_dead");
-		this.initialState = CharacterAnimationState.IDLE;
+		addCharacterState( CharacterAnimationType.RUN, "zombie_walk", Vector2.zero);
+		addCharacterState( CharacterAnimationType.JUMP, "zombie_idle", Vector2.zero);
+		addCharacterState( CharacterAnimationType.IDLE, "zombie_idle", Vector2.zero);
+		addCharacterState( CharacterAnimationType.DEAD, "zombie_dead", new Vector2(0.515f, -0.165f));
+
+
+		//this.animationKeys.Add(CharacterAnimationType.RUN, "zombie_walk");
+		//this.animationKeys.Add(CharacterAnimationType.JUMP, "zombie_idle");
+		//this.animationKeys.Add(CharacterAnimationType.IDLE, "zombie_idle");
+		//this.animationKeys.Add(CharacterAnimationType.DEAD, "zombie_dead");
+		this.initialStateType = CharacterAnimationType.IDLE;
 
 		float width = 0.8f;
 		float height = 1.3f;
@@ -38,10 +44,10 @@ public class Enemy : Character  {
 			world.FLOOR_Y + height
 		);
 			
-		this.isKinematic = true;
+		this.isKinematic = false;
 		this.velocity = new Vector2(0,0);
 
-		affectedByWorldMovement = true;
+		//affectedByWorldMovement = false;
 
 		constrainMovement = false;
 		constrainRotation = true;

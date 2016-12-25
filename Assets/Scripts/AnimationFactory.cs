@@ -19,7 +19,6 @@ public class AnimationFactory  {
 	public AnimationClipPlayable loadAnimation(string name, string key){
 
 		AnimationClip clip = Resources.Load<AnimationClip> ("Animations/" + name + "/" + key );
-
 		return AnimationClipPlayable.Create (clip);
 
 	}

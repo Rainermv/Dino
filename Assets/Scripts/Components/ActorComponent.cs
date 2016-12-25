@@ -11,7 +11,7 @@ public class ActorComponent : MonoBehaviour {
 
 	public Vector2 getSpriteSize(){
 
-		SpriteRenderer rend = GetComponent<SpriteRenderer> ();
+		SpriteRenderer rend =  GetComponentsInChildren<SpriteRenderer> ()[0];
 		Vector2 size = Vector2.zero;
 
 		if (rend != null) {
@@ -57,7 +57,7 @@ public class ActorComponent : MonoBehaviour {
 	
 	protected virtual void FixedUpdate () {
 
-		if (actor.affectedByWorldMovement){
+		if (actor.isKinematic){
 
 			if (actor.hasRigidbody) {
 				//moveVector = actor.velocity;

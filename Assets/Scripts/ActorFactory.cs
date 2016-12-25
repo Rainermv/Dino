@@ -28,9 +28,10 @@ public class ActorFactory  {
 		Player playerModel = new Player();
 
 		GameObject actorGameObject = createGameObject(playerModel);
+		GameObject actorView = createChild (actorGameObject, "Player view", Vector2.zero);
 
-		addAnimator (actorGameObject, playerModel);
-		addSpriteRenderer(actorGameObject, playerModel);
+		addAnimator (actorView, playerModel);
+		addSpriteRenderer(actorView, playerModel);
 
 		foreach (ColliderInfo coll in playerModel.colliders) {
 			addCollider2D (actorGameObject, coll);
@@ -46,9 +47,10 @@ public class ActorFactory  {
 		Enemy enemyModel = new Enemy();
 
 		GameObject actorGameObject = createGameObject(enemyModel);
+		GameObject actorView = createChild (actorGameObject, "Enemy view", Vector2.zero);
 
-		addAnimator (actorGameObject, enemyModel);
-		addSpriteRenderer(actorGameObject, enemyModel);
+		addAnimator (actorView, enemyModel);
+		addSpriteRenderer(actorView, enemyModel);
 
 		foreach (ColliderInfo coll in enemyModel.colliders) {
 			addCollider2D (actorGameObject, coll);
@@ -62,6 +64,7 @@ public class ActorFactory  {
 	public ActorComponent buildActor(Actor actorModel){
 
 		GameObject actorGameObject = createGameObject(actorModel);
+
 
 		addSpriteRenderer(actorGameObject, actorModel);
 
@@ -123,8 +126,8 @@ public class ActorFactory  {
 
 		GameObject actorGameObject = new GameObject();
 		actorGameObject.name = actor.name + " - ID: " + id++;
-		actorGameObject.tag = actor.tag;
 
+		actorGameObject.tag = actor.tag;
 		actorGameObject.layer = actor.layer;
 
 		actorGameObject.transform.position = actor.startingPosition;
@@ -133,6 +136,23 @@ public class ActorFactory  {
 		return actorGameObject;
 	}
 
+	
+	private GameObject createChild( GameObject parentGameObject, string name,  Vector2 localPosition ){
+
+		GameObject child = new GameObject();
+
+		child.name = name;
+
+		child.tag = parentGameObject.tag;
+		child.layer = parentGameObject.layer;
+
+		child.transform.parent = parentGameObject.transform;
+
+		child.transform.localPosition = localPosition;
+
+		return child;
+
+	}
 
 
 	private SpriteRenderer addSpriteRenderer(GameObject obj, Actor actor){

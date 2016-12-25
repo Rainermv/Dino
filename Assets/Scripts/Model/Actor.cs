@@ -46,7 +46,7 @@ public abstract class Actor {
 	public bool constrainRotation = false;
 	public bool constrainMovement = false;
 
-	public bool affectedByWorldMovement = true;
+	//public bool affectedByWorldMovement = true;
 	public float worldMovementMultiplier = 1;
 
 	public bool hasRigidbody = true;

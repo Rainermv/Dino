@@ -9,7 +9,7 @@ public class Background : Actor {
 		depth = 0;
 
 		//worldMovementMultiplier = 0.5f;
-		affectedByWorldMovement = false;
+		//affectedByWorldMovement = false;
 
 		hasRigidbody = false;
 	}

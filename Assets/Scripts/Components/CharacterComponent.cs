@@ -12,17 +12,19 @@ public class CharacterComponent : ActorComponent {
 	protected Animator anim;
 
 	protected AnimationClipPlayable currentAnimation;
-	protected CharacterAnimationState state;
+	protected CharacterAnimationState currentCharacterState;
 
 	private RaycastHit2D floorCast;
 
 	private Vector2 floorRayOrigin;
 
+	protected Vector2 dynamicVelocity = Vector2.zero;
+
 	// Use this for initialization
 	protected override void Awake () {
 		base.Awake ();
 
-		anim = GetComponent<Animator> ();
+		anim = GetComponentsInChildren<Animator> ()[0];
 
 	}
 
@@ -32,7 +34,7 @@ public class CharacterComponent : ActorComponent {
 
 		character = actor as Character;
 
-		SetState (character.initialState);
+		SetState (character.initialStateType);
 
 		Bounds bounds = getBounds ();
 		Vector2 offset = colls [0].offset;
@@ -41,17 +43,23 @@ public class CharacterComponent : ActorComponent {
 
 	}
 
-	protected void SetState(CharacterAnimationState newState){
+	protected void SetState(CharacterAnimationType stateType){
 
 		if (currentAnimation.IsValid()) {
 			currentAnimation.Destroy ();
 		}
 
-		state = newState;
-		string animKey = character.animationKeys [state];
-		currentAnimation = AnimationFactory.getInstance ().loadAnimation (character.name, animKey);
+		currentCharacterState = character.animationStates [stateType];
+		//string animKey = character.animationKeys [state];
+		currentAnimation = AnimationFactory.getInstance ().loadAnimation (character.name, currentCharacterState.animationKey);
+
+		anim.gameObject.transform.localPosition = currentCharacterState.animationOffset;
+
+		//print (anim == null);
 
 		anim.Play (currentAnimation);
+
+		anim.updateMode = AnimatorUpdateMode.UnscaledTime;
 	}
 
 
@@ -60,7 +68,7 @@ public class CharacterComponent : ActorComponent {
 	protected override void Update () {
 		base.Update ();
 
-		currentAnimation.speed = rb.velocity.x + Mathf.Abs(world.BASE_SPEED.x * world.BASE_SPEED_ANIM_MULTIPLIER);
+
 		character.isTouchingFloor = raycastFloor();	
 	}
 

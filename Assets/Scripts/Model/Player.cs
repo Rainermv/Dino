@@ -24,9 +24,10 @@ public class Player : Character  {
 		this.name = "Santa";
 		this.spriteKey = null;
 
-		this.animationKeys.Add(CharacterAnimationState.RUN, "santa_run");
-		this.animationKeys.Add(CharacterAnimationState.JUMP, "santa_jump");
-		this.initialState = CharacterAnimationState.RUN;
+		addCharacterState(CharacterAnimationType.RUN, "santa_run", Vector2.zero);
+		addCharacterState(CharacterAnimationType.JUMP, "santa_jump",Vector2.zero);
+
+		this.initialStateType = CharacterAnimationType.RUN;
 
 		float width = 0.8f;
 		float height = 1.5f;
@@ -51,7 +52,7 @@ public class Player : Character  {
 
 		dynamicVelocityAdjust = 1f;
 
-		affectedByWorldMovement = false;
+		//affectedByWorldMovement = false;
 
 		constrainMovement = false;
 		constrainRotation = true;

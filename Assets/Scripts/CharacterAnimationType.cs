@@ -1,11 +1,12 @@
 ﻿using System;
 
-public enum CharacterAnimationState
+public enum CharacterAnimationType
 {
 	RUN,
 	JUMP,
 	IDLE,
 	DEAD
 }
+
 
 

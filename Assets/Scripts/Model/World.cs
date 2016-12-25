@@ -20,7 +20,7 @@ public class World {
 	public float SCREEN_BOTTOM = -5f;
 	
 	public float FLOOR_Y = -4.5f;
-	public float CELLING_Y = 4.5f;
+	public float CELLING_Y = 2.5f;//4.5f;
 	//public float FLOOR_Y = 4.5f;
 
 	public float SCREEN_LEFT = -9f;
@@ -47,6 +47,8 @@ public class World {
 	public List<PlatformGenerationStrategy> GENERATION_STRATEGY_LIST = new List<PlatformGenerationStrategy>();
 
 	public PlatformGenerationStrategy GENERATION_STRATEGY = PlatformGenerationStrategy.Ground;
+	//public PlatformGenerationStrategy GENERATION_STRATEGY = PlatformGenerationStrategy.Air;
+
 	public float STRATEGY_CHANGE_FREQUENCY = 25f;
 	public float STRATEGY_CHANGE_CHANCE = 0.5f;
 

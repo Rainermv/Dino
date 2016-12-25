@@ -4,11 +4,16 @@ using System.Collections.Generic;
 
 public abstract class Character : Actor  {
 
-	public Dictionary<CharacterAnimationState, string> animationKeys = new Dictionary<CharacterAnimationState,string>();
-	public CharacterAnimationState initialState;
+	//public Dictionary<CharacterAnimationState, string> animationKeys = new Dictionary<CharacterAnimationState,string>();
+
+	public Dictionary<CharacterAnimationType, CharacterAnimationState> animationStates = new Dictionary<CharacterAnimationType, CharacterAnimationState>();
+
+	public CharacterAnimationType initialStateType;
 
 	public Vector2 jumpForce;
+
 	public bool isTouchingFloor = true;
+	public bool isAlive = true;
 
 	protected void setCollider(Vector2 size, Vector2 colliderOffset){
 
@@ -20,6 +25,12 @@ public abstract class Character : Actor  {
 		boxCollider.offset =colliderOffset;
 		boxCollider.materialKey = "Player";
 		colliders.Add (boxCollider);
+
+	}
+
+	protected void addCharacterState(CharacterAnimationType animationType,  string animationKey, Vector2 animationOffset){
+
+		this.animationStates.Add( animationType, new CharacterAnimationState (animationType, animationKey, animationOffset) );
 
 	}
 

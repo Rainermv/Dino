@@ -5,8 +5,6 @@ public class PlayerComponent : CharacterComponent {
 
 	private Player player;
 
-	private Vector2 dynamicVelocity = Vector2.zero;
-
 	private ActorComponent floorTouched;
 			
 	protected override void Awake(){
@@ -29,12 +27,14 @@ public class PlayerComponent : CharacterComponent {
 	protected override void Update () {
 		base.Update();
 
-		if (state == CharacterAnimationState.RUN && player.isTouchingFloor == false) {
-			SetState(CharacterAnimationState.JUMP);
+		if (currentCharacterState.animationType == CharacterAnimationType.RUN && player.isTouchingFloor == false) {
+			SetState(CharacterAnimationType.JUMP);
 		}
-		else if (state == CharacterAnimationState.JUMP && player.isTouchingFloor == true) {
-			SetState(CharacterAnimationState.RUN);
+		else if (currentCharacterState.animationType == CharacterAnimationType.JUMP && player.isTouchingFloor == true) {
+			SetState(CharacterAnimationType.RUN);
 		}
+
+		currentAnimation.speed = rb.velocity.x + Mathf.Abs(world.BASE_SPEED.x * world.BASE_SPEED_ANIM_MULTIPLIER);
 			
 							
 	}
@@ -84,22 +84,27 @@ public class PlayerComponent : CharacterComponent {
 	protected override void OnCollisionEnter2D(Collision2D collision){
 		base.OnCollisionEnter2D(collision);
 
+		// HIT ENEMY
 		if (collision.gameObject.tag == "ENEMY") {
 
-			float normalY = getContactNormal (collision).y;
+			Vector2 contactNormal = getContactNormal (collision);
 
-			if (normalY >= 0.5) {
+			if (contactNormal.y >= 0.5) {
 
 				ActionJump ();
-				player.jumps = player.maxJumps;
+				player.jumps += 1;
 
-			} else {
-				print ("pullback");
+				collision.gameObject.SendMessage ("Kill");
+
+			} 
+
+			else if (contactNormal.x <= 0.5) {
 				dynamicVelocity.x = collision.gameObject.GetComponent<EnemyComponent>().enemy.pullbackVelocity;
 			}
 
 		}
 
+		// HIT FLOOR
 		if (collision.gameObject.tag == "FLOOR" || collision.gameObject.tag == "PLATFORM"  ){
 					
 			// Get a jump if the player jump on the top of a floor

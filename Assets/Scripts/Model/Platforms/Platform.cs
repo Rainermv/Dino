@@ -20,7 +20,7 @@ public class Platform : Actor {
 		this.isKinematic = true;
 		this.velocity = new Vector2(0,0);
 
-		affectedByWorldMovement = true;
+		//affectedByWorldMovement = true;
 	}
 
 	public void setRandomPosition(){
