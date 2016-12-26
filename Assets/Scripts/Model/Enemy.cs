@@ -5,6 +5,8 @@ public class Enemy : Character  {
 
 	public float pullbackVelocity;
 
+	public string AIKey = "Zombie";
+
 	public Enemy ()
 	{
 

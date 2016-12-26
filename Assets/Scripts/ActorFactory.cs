@@ -58,7 +58,12 @@ public class ActorFactory  {
 
 		addRigidbody2D(actorGameObject, enemyModel);
 
-		return addEnemyComponent(actorGameObject, enemyModel);
+		EnemyComponent enemyComponent = addEnemyComponent(actorGameObject, enemyModel);
+
+		AI enemyAI = AILoader.getInstance ().GetAI (enemyModel.AIKey);
+		enemyComponent.EnemyAI = enemyAI;
+
+		return enemyComponent;
 	}
 		
 	public ActorComponent buildActor(Actor actorModel){
@@ -125,7 +130,9 @@ public class ActorFactory  {
 	private GameObject createGameObject(Actor actor){
 
 		GameObject actorGameObject = new GameObject();
-		actorGameObject.name = actor.name + " - ID: " + id++;
+
+		actor.id = id++;
+		actorGameObject.name = actor.name + " - ID: " + actor.id;
 
 		actorGameObject.tag = actor.tag;
 		actorGameObject.layer = actor.layer;
@@ -238,7 +245,7 @@ public class ActorFactory  {
 
 		ActorComponent act = obj.AddComponent<ActorComponent>();
 		act.actor = actor;
-		act.actor.id = id++;
+		//act.actor.id = id++;
 
 		return act;
 
@@ -248,7 +255,7 @@ public class ActorFactory  {
 
 		EnemyComponent el = obj.AddComponent<EnemyComponent>();
 		el.actor = actorEnemy;
-		el.actor.id = id++;
+		//el.actor.id = id++;
 
 		return el;
 
@@ -258,7 +265,7 @@ public class ActorFactory  {
 
 		PlayerComponent pl = obj.AddComponent<PlayerComponent>();
 		pl.actor = actorPlayer;
-		pl.actor.id = id++;
+		//pl.actor.id = id++;
 
 		return pl;
 

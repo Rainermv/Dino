@@ -1,12 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine.Experimental.Director;
 
 public class CharacterComponent : ActorComponent {
 
 	//int ignoreMask = 8; // Character layer
-	RaycastHit2D[] raycasts;
-
 	Character character;
 
 	protected Animator anim;
@@ -14,11 +13,20 @@ public class CharacterComponent : ActorComponent {
 	protected AnimationClipPlayable currentAnimation;
 	protected CharacterAnimationState currentCharacterState;
 
-	private RaycastHit2D floorCast;
+	private Dictionary<string, CharacterRay> characterRays =  new Dictionary<string, CharacterRay> (); 
+	//private Dictionary<string, RaycastHit2D> raycasts = new Dictionary<string, RaycastHit2D> (); 
+	//private Dictionary<string, Vector2> raycastOrigins = new Dictionary<string, Vector2> (); 	//private RaycastHit2D floorCast;
+	//private Dictionary<string, Vector2> raycastDirections = new Dictionary<string, Vector2> (); 
+	//private RaycastHit2D cliffCast;
 
-	private Vector2 floorRayOrigin;
+	//private Vector2 floorRayOrigin;
+	//private Vector2 cliffRayOrigin;
 
 	protected Vector2 dynamicVelocity = Vector2.zero;
+
+	public CharacterAnimationState CurrentCharacterState{
+		get { return currentCharacterState; } 
+	}
 
 	// Use this for initialization
 	protected override void Awake () {
@@ -36,14 +44,41 @@ public class CharacterComponent : ActorComponent {
 
 		SetState (character.initialStateType);
 
-		Bounds bounds = getBounds ();
-		Vector2 offset = colls [0].offset;
+		//Bounds bounds = getBounds ();
 
-		floorRayOrigin = new Vector2 (offset.x, bounds.min.y - transform.position.y);
+		BoxCollider2D collider = colls [0] as BoxCollider2D;
+		Vector2 offset = collider.offset;
+
+		characterRays.Add("floorCast", new CharacterRay (
+			//new Vector2(offset.x, bounds.min.y - transform.position.y),  
+			new Vector2(offset.x,-collider.size.y /2),  
+			Vector2.down * 0.5f, 
+			Color.yellow ));
+
+		characterRays.Add("cliffCast", new CharacterRay (
+			new Vector2(offset.x + collider.size.x /2, -collider.size.y /2),  
+			new Vector2(0.5f, -0.5f), 
+			Color.red ));
+
+		//raycastOrigins.Add ("cliffCast", new Vector2 (bounds.min.x , bounds.min.y - transform.position.y));
+
+	
 
 	}
 
-	protected void SetState(CharacterAnimationType stateType){
+	public void Flip(){
+
+		character.direction = -character.direction;
+
+		transform.localScale = new Vector3(
+			transform.localScale.x * character.direction,
+			transform.localScale.y,
+			transform.localScale.z
+		);
+
+	}
+
+	public void SetState(CharacterAnimationType stateType){
 
 		if (currentAnimation.IsValid()) {
 			currentAnimation.Destroy ();
@@ -68,8 +103,8 @@ public class CharacterComponent : ActorComponent {
 	protected override void Update () {
 		base.Update ();
 
-
-		character.isTouchingFloor = raycastFloor();	
+		character.isTouchingFloor = Raycast("floorCast");
+		character.isOnCliff = Raycast("cliffCast");
 	}
 
 	public void ActionJump(){
@@ -78,22 +113,29 @@ public class CharacterComponent : ActorComponent {
 
 	}
 
-	bool raycastFloor() {
+
+	bool Raycast(string key){
+
+		CharacterRay characterRay = characterRays [key];
 
 		Vector2 trvc2 = transform.position;
-		Vector2 rayOrigin = floorRayOrigin + trvc2; 
 
-		floorCast = Physics2D.Linecast (rayOrigin, rayOrigin + (Vector2.down * 0.5f), 1 <<  Layers.FLOORS);
+		Vector2 rayOrigin = characterRay.origin * character.direction + trvc2 ; 
+		Vector2 rayDirection = characterRay.direction * character.direction  + rayOrigin; 
 
-		Debug.DrawLine (rayOrigin, rayOrigin + (Vector2.down * 0.5f), Color.yellow);
+		characterRay.raycast = Physics2D.Linecast (rayOrigin, rayDirection, 1 <<  Layers.FLOORS);
+
+		Debug.DrawLine (rayOrigin, rayDirection, characterRay.debugColor);
 
 		//if (floorCast.collider != null && (floorCast.collider.tag == "FLOOR" || floorCast.collider.tag == "PLATFORM")) {
-		if (floorCast.collider != null) {
+		if (characterRay.raycast.collider != null) {
 			return true;
 		}
 
 		return false;
+
 	}
+
 
 	/*
 	protected override void OnCollisionEnter2D(Collision2D collision){

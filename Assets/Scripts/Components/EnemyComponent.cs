@@ -5,28 +5,34 @@ public class EnemyComponent : CharacterComponent {
 
 	public Enemy enemy;
 
+	private AI enemyAI;
+
+	public AI EnemyAI {
+		set { enemyAI = value; }
+	}
+
+	/*
+	public void setAI(AI enemyAI){
+		this.enemyAI = enemyAI;
+	}
+	*/
+
 	protected override void Start () {
 		base.Start ();
-
-		transform.localScale = new Vector3(
-			transform.localScale.x * -1,
-			transform.localScale.y,
-			transform.localScale.z
-		);
 
 		enemy = actor as Enemy;
 
 		SetState (CharacterAnimationType.RUN);
+
+		enemyAI.StartAI ( this );
 	}
 
 	protected override void Update () {
 		base.Update ();
 
-		if (currentCharacterState.animationType != CharacterAnimationType.DEAD && enemy.isAlive == false) {
+		enemyAI.UpdateAI (this);
 
-			//rb.AddForce (new Vector2(5000f, 0f));
-			SetState (CharacterAnimationType.DEAD);
-		}
+
 
 	}
 

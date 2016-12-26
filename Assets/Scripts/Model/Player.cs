@@ -57,7 +57,7 @@ public class Player : Character  {
 		constrainMovement = false;
 		constrainRotation = true;
 
-		jumpForce = new Vector2(0,520);
+		jumpForce = new Vector2(0,600);
 		maxJumps = jumps = 3;
 			
 	}

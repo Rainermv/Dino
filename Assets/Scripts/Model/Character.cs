@@ -13,7 +13,10 @@ public abstract class Character : Actor  {
 	public Vector2 jumpForce;
 
 	public bool isTouchingFloor = true;
+	public bool isOnCliff = false;
 	public bool isAlive = true;
+
+	public float direction = 1f;
 
 	protected void setCollider(Vector2 size, Vector2 colliderOffset){
 

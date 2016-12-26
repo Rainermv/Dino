@@ -6,7 +6,7 @@ public class World {
 
 	private static World instance;
 
-	public Vector2 GRAVITY = new Vector2 (0, -15);
+	public Vector2 GRAVITY = new Vector2 (0, -18);
 	
 	public Vector2 BASE_SPEED = new Vector2 (-3f, 0);
 	public float BASE_SPEED_ANIM_MULTIPLIER = 0.3f;

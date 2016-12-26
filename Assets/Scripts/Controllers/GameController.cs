@@ -212,8 +212,6 @@ public class GameController : MonoBehaviour {
 						BoxCollider2D enemyCollider = enemy.getColliders () [0] as BoxCollider2D;
 						float enemySizeY = enemyCollider.size.y;
 
-						print ((float)platformSizeY * 0.5f + (float)enemySizeY * 0.5f - (float)enemyCollider.offset.y);
-
 						enemy.transform.position = platform.transform.position;
 						enemy.transform.Translate (0, platformSizeY * 0.5f + enemySizeY * 0.5f - enemyCollider.offset.y, 0);							
 					}
@@ -260,7 +258,7 @@ public class GameController : MonoBehaviour {
 
 	public void RestartGame(){
 
-		print ("click");
+		//print ("click");
 
 		Application.LoadLevel(Application.loadedLevel);
 		World.restart ();
