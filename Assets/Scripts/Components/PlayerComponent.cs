@@ -35,8 +35,11 @@ public class PlayerComponent : CharacterComponent {
 		}
 
 		currentAnimation.speed = rb.velocity.x + Mathf.Abs(world.BASE_SPEED.x * world.BASE_SPEED_ANIM_MULTIPLIER);
-			
-							
+
+		// The player is invincible before he enters the screen
+		if (transform.position.x > world.SCREEN_LEFT) {
+			player.isInvincible = false;
+		}
 	}
 
 	// Update is called once per frame
@@ -54,13 +57,14 @@ public class PlayerComponent : CharacterComponent {
 			rb.velocity = new Vector2 (0, rb.velocity.y) + dynamicVelocity;
 		}
 			
-		if (transform.position.x < world.SCREEN_DEATH_X || transform.position.y < world.SCREEN_DEATH_Y) {
+		if (!player.isInvincible && 
+			(transform.position.x < world.SCREEN_DEATH_X || transform.position.y < world.SCREEN_DEATH_Y)) {
 
 			world.BASE_SPEED = Vector2.zero;
 			rb.velocity = Vector2.zero;
 
 		}
-
+			
 		dynamicVelocity = Vector2.MoveTowards (dynamicVelocity, Vector2.zero, player.dynamicVelocityAdjust);
 
 	}

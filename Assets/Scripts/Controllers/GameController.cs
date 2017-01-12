@@ -208,7 +208,6 @@ public class GameController : MonoBehaviour {
 
 						float platformSizeY = (platform.getColliders () [0] as BoxCollider2D).size.y;
 
-
 						BoxCollider2D enemyCollider = enemy.getColliders () [0] as BoxCollider2D;
 						float enemySizeY = enemyCollider.size.y;
 
@@ -263,4 +262,6 @@ public class GameController : MonoBehaviour {
 		Application.LoadLevel(Application.loadedLevel);
 		World.restart ();
 	}
+
+
 }

@@ -12,6 +12,8 @@ public class Player : Character  {
 
 	public float dynamicVelocityAdjust;
 
+	public bool isInvincible = true;
+
 	public Player(){
 
 		this.tag = "PLAYER";
@@ -57,7 +59,7 @@ public class Player : Character  {
 		constrainMovement = false;
 		constrainRotation = true;
 
-		jumpForce = new Vector2(0,600);
+		jumpForce = new Vector2(0,500);
 		maxJumps = jumps = 3;
 			
 	}

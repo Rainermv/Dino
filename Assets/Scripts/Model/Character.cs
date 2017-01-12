@@ -18,6 +18,9 @@ public abstract class Character : Actor  {
 
 	public float direction = 1f;
 
+	public float gravityScaleBase = 1;
+	public float gravityScaleFalling = 3f;
+
 	protected void setCollider(Vector2 size, Vector2 colliderOffset){
 
 		ColliderInfo boxCollider = new ColliderInfo ();

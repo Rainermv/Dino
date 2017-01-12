@@ -24,6 +24,8 @@ public class CharacterComponent : ActorComponent {
 
 	protected Vector2 dynamicVelocity = Vector2.zero;
 
+
+
 	public CharacterAnimationState CurrentCharacterState{
 		get { return currentCharacterState; } 
 	}
@@ -105,6 +107,19 @@ public class CharacterComponent : ActorComponent {
 
 		character.isTouchingFloor = Raycast("floorCast");
 		character.isOnCliff = Raycast("cliffCast");
+	}
+
+	// Update is called once per frame
+	protected override void FixedUpdate () {
+		base.FixedUpdate();
+	
+		// update character's gravity scale
+		if (!character.isTouchingFloor && rb.velocity.y < 0) {
+			rb.gravityScale = character.gravityScaleFalling;
+		} else {
+			rb.gravityScale = character.gravityScaleBase;
+		}
+
 	}
 
 	public void ActionJump(){

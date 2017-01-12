@@ -16,9 +16,6 @@ public class PlayerController : MonoBehaviour {
 	
 	void Awake(){
 		
-		// No futuro, criar o personagem dinamicamente e guardar referência do seu model
-		//playerAvatar = GameObject.FindWithTag("PLAYER").GetComponent<PlayerComponent>();
-		
 	}
 
 	// Use this for initialization
