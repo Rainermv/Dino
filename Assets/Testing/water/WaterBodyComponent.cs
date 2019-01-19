@@ -75,8 +75,8 @@ public class WaterBodyComponent : MonoBehaviour
 		body = gameObject.AddComponent<LineRenderer> ();
 		body.material = mat;
 		body.material.renderQueue = 1000;
-		body.SetVertexCount (nodeCount);
-		body.SetWidth (0.1f, 0.1f);
+		//body.SetVertexCount (nodeCount);
+		//body.SetWidth (0.1f, 0.1f);
 
 		waterNodes = new WaterNode[ nodeCount ];
 		waterMeshes = new WaterMesh[ edgeCount ];

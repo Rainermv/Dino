@@ -8,6 +8,8 @@ TagManager:
   - FLOOR
   - PLATFORM
   - ENEMY
+  - PICKUP
+  - PROP
   layers:
   - Default
   - TransparentFX
@@ -19,7 +21,7 @@ TagManager:
   - 
   - floor
   - characters
-  - 
+  - props
   - 
   - 
   - 

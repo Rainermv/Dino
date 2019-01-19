@@ -23,20 +23,26 @@ public class Player : Character  {
 
 		//this.tint = Color.white;
 
-		this.name = "Santa";
-		this.spriteKey = null;
+		//this.name = "Santa";
+		//this.spriteKey = "Santa/Run (1)";
 
-		addCharacterState(CharacterAnimationType.RUN, "santa_run", Vector2.zero);
-		addCharacterState(CharacterAnimationType.JUMP, "santa_jump",Vector2.zero);
+		//addCharacterState(CharacterAnimationType.RUN, "santa_run", Vector2.zero);
+		//addCharacterState(CharacterAnimationType.JUMP, "santa_jump",Vector2.zero);
 
-		this.initialStateType = CharacterAnimationType.RUN;
+        this.name = "Dino";
+        this.spriteKey = "Dino/Run (1)";
+
+        addCharacterState(CharacterAnimationType.RUN, "dino_run", Vector2.zero);
+        addCharacterState(CharacterAnimationType.JUMP, "dino_jump", Vector2.zero);
+
+        this.initialStateType = CharacterAnimationType.RUN;
 
 		float width = 0.8f;
 		float height = 1.5f;
 
 		float offset_x = -0.3f;
 
-		setCollider (new Vector2 (width, height), new Vector2 (offset_x, -0.1f));
+		setCollider (new Vector2 (width, height), new Vector2 (offset_x, -0.1f), "Player");
 
 		this.startingPosition = new Vector2( 
 			world.SCREEN_LEFT -2,
@@ -59,7 +65,7 @@ public class Player : Character  {
 		constrainMovement = false;
 		constrainRotation = true;
 
-		jumpForce = new Vector2(0,500);
+		jumpForce = new Vector2(0,550);
 		maxJumps = jumps = 3;
 			
 	}

@@ -1,13 +1,22 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.Playables;
+using UnityEngine.Animations;
 
 public class PlayerComponent : CharacterComponent {
 
-	private Player player;
+	public Player PlayerActor { get; set; }
 
 	private ActorComponent floorTouched;
-			
-	protected override void Awake(){
+
+    public delegate void JumpChange(int jumps);
+    public JumpChange jumpChange;
+
+    public delegate void PlayerDeath();
+    public PlayerDeath playerDeath;
+
+
+    protected override void Awake(){
 		base.Awake();	
 
 		rb = GetComponent<Rigidbody2D>();
@@ -20,25 +29,27 @@ public class PlayerComponent : CharacterComponent {
 
 		//rb.drag = 100;
 
-		player = actor as Player;
+		PlayerActor = actor as Player;
 	}
 
 	// Update is called once per frame
 	protected override void Update () {
 		base.Update();
 
-		if (currentCharacterState.animationType == CharacterAnimationType.RUN && player.isTouchingFloor == false) {
+		if (currentCharacterState.animationType == CharacterAnimationType.RUN && PlayerActor.isTouchingFloor == false) {
 			SetState(CharacterAnimationType.JUMP);
 		}
-		else if (currentCharacterState.animationType == CharacterAnimationType.JUMP && player.isTouchingFloor == true) {
+		else if (currentCharacterState.animationType == CharacterAnimationType.JUMP && PlayerActor.isTouchingFloor == true) {
 			SetState(CharacterAnimationType.RUN);
 		}
 
-		currentAnimation.speed = rb.velocity.x + Mathf.Abs(world.BASE_SPEED.x * world.BASE_SPEED_ANIM_MULTIPLIER);
+        //anim.speed = rb.velocity.x + Mathf.Abs(world.BASE_SPEED.x * world.BASE_SPEED_ANIM_MULTIPLIER);
 
-		// The player is invincible before he enters the screen
-		if (transform.position.x > world.SCREEN_LEFT) {
-			player.isInvincible = false;
+        //currentPlayableAnimation.speed = rb.velocity.x + Mathf.Abs(world.BASE_SPEED.x * world.BASE_SPEED_ANIM_MULTIPLIER);
+
+        // The player is invincible before he enters the screen
+        if (transform.position.x > world.SCREEN_LEFT) {
+			PlayerActor.isInvincible = false;
 		}
 	}
 
@@ -46,10 +57,10 @@ public class PlayerComponent : CharacterComponent {
 	protected override void FixedUpdate () {
 		base.FixedUpdate();
 
-		if (transform.position.x < player.stableXPosition && player.isTouchingFloor) {
+		if (transform.position.x < PlayerActor.stableXPosition && PlayerActor.isTouchingFloor) {
 
-			float distance = player.stableXPosition - transform.position.x;
-			float vel_x = player.recomposeXSpeed * distance / player.recomposeDistance;
+			float distance = PlayerActor.stableXPosition - transform.position.x;
+			float vel_x = PlayerActor.recomposeXSpeed * distance / PlayerActor.recomposeDistance;
 
 			rb.velocity = new Vector2 (vel_x, rb.velocity.y) + dynamicVelocity;
 
@@ -57,30 +68,36 @@ public class PlayerComponent : CharacterComponent {
 			rb.velocity = new Vector2 (0, rb.velocity.y) + dynamicVelocity;
 		}
 			
-		if (!player.isInvincible && 
+		if (!PlayerActor.isInvincible && 
 			(transform.position.x < world.SCREEN_DEATH_X || transform.position.y < world.SCREEN_DEATH_Y)) {
 
 			world.BASE_SPEED = Vector2.zero;
 			rb.velocity = Vector2.zero;
 
-		}
+            playerDeath();
+
+
+        }
 			
-		dynamicVelocity = Vector2.MoveTowards (dynamicVelocity, Vector2.zero, player.dynamicVelocityAdjust);
+		dynamicVelocity = Vector2.MoveTowards (dynamicVelocity, Vector2.zero, PlayerActor.dynamicVelocityAdjust);
 
 	}
 
 	
 	public void PlayerJump(){
 		
-		if (player.jumps > 0){
+		if (PlayerActor.jumps > 0){
 
 			//rb.drag = 0;
 
 			rb.velocity = new Vector2(rb.velocity.x, 0);
-			rb.AddForce(player.jumpForce);
+			rb.AddForce(PlayerActor.jumpForce);
 			
-			player.jumps--;
-		}
+			PlayerActor.jumps--;
+
+            jumpChange(PlayerActor.jumps);
+
+        }
 
 
 	}
@@ -96,14 +113,16 @@ public class PlayerComponent : CharacterComponent {
 			if (contactNormal.y >= 0.5) {
 
 				ActionJump ();
-				player.jumps += 1;
+				PlayerActor.jumps += 1;
 
-				collision.gameObject.SendMessage ("Kill");
+                jumpChange(PlayerActor.jumps);
+
+                collision.gameObject.SendMessage ("Kill");
 
 			} 
 
 			else if (contactNormal.x <= 0.5) {
-				dynamicVelocity.x = collision.gameObject.GetComponent<EnemyComponent>().enemy.pullbackVelocity;
+				dynamicVelocity.x = collision.gameObject.GetComponent<EnemyComponent>().enemy.collisionPullbackVelocity;
 			}
 
 		}
@@ -113,9 +132,11 @@ public class PlayerComponent : CharacterComponent {
 					
 			// Get a jump if the player jump on the top of a floor
 			if (getContactNormal(collision).y >= 0.75){
-				player.jumps = player.maxJumps;
-				//rb.drag = 1000;
-			}
+				PlayerActor.jumps = PlayerActor.maxJumps;
+
+                jumpChange(PlayerActor.jumps);
+                //rb.drag = 1000;
+            }
 		
 		}
 			
@@ -143,6 +164,17 @@ public class PlayerComponent : CharacterComponent {
 		}
 	}
 
+    protected override void OnTriggerEnter2D(Collider2D collider) {
+        base.OnTriggerEnter2D(collider);
+
+        if (collider.tag == "PICKUP")
+        {
+            PickupComponent pickup = collider.GetComponent<PickupComponent>();
+            pickup.TriggerPickup(this);
+        }
+
+    }
+
 	protected override void OnCollisionStay2D(Collision2D collision){
 		base.OnCollisionEnter2D(collision);
 
@@ -153,7 +185,6 @@ public class PlayerComponent : CharacterComponent {
 			foreach (ContactPoint2D contact in collision.contacts) {
 			
 				if (contact.normal.y >= 1){
-
 
 					//transform.position.x += world.BASE_SPEED.x * Time.deltaTime;
 				}

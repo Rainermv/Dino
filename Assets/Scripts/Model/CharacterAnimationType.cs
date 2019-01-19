@@ -5,7 +5,8 @@ public enum CharacterAnimationType
 	RUN,
 	JUMP,
 	IDLE,
-	DEAD
+	DEAD,
+    FALLING,
 }
 
 

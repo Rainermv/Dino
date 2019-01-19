@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
-using UnityEngine.Experimental.Director;
+using UnityEngine.Playables;
+using UnityEngine.Animations;
 
 public class AnimationFactory  {
 
@@ -16,11 +17,16 @@ public class AnimationFactory  {
 		return instance;
 	}
 
-	public AnimationClipPlayable loadAnimation(string name, string key){
+	public AnimationClipPlayable loadAnimation(PlayableGraph playableGraph, string name, string key){
 
 		AnimationClip clip = Resources.Load<AnimationClip> ("Animations/" + name + "/" + key );
-		return AnimationClipPlayable.Create (clip);
+		return AnimationClipPlayable.Create (playableGraph, clip);
 
 	}
+
+    public AnimationClip getAnimationClip(string name, string key)
+    {
+        return Resources.Load<AnimationClip>("Animations/" + name + "/" + key);
+    }
 
 }

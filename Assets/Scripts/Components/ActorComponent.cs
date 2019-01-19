@@ -9,12 +9,14 @@ public class ActorComponent : MonoBehaviour {
 	protected World world;
 	public Actor actor;
 
-	public Vector2 getSpriteSize(){
+    SpriteRenderer rend;
 
-		SpriteRenderer rend =  GetComponentsInChildren<SpriteRenderer> ()[0];
+
+    public Vector2 getSpriteSize(){
+
 		Vector2 size = Vector2.zero;
 
-		if (rend != null) {
+		if (this.rend != null) {
 
 			Bounds b = rend.bounds;
 
@@ -35,7 +37,9 @@ public class ActorComponent : MonoBehaviour {
 		rb = GetComponent<Rigidbody2D>();
 		colls =  GetComponents<Collider2D>();
 
-		world = World.getInstance();
+        rend = GetComponentsInChildren<SpriteRenderer>()[0];
+
+        world = World.getInstance();
 	}
 
 	
@@ -47,7 +51,7 @@ public class ActorComponent : MonoBehaviour {
 	// Update is called once per frame
 	protected virtual void Update () {
 
-		if (transform.position.x < world.X_REMOVE) {
+		if (transform.position.x < world.X_REMOVE && !actor.indestructable) {
 
 			Destroy (gameObject);
 
@@ -101,8 +105,23 @@ public class ActorComponent : MonoBehaviour {
 
 	}
 
+    protected virtual void OnTriggerEnter2D(Collider2D collider)
+    {
 
-	public Bounds getBounds(){
+    }
+
+    protected virtual void OnTriggerExit2D(Collider2D collider)
+    {
+
+    }
+
+    protected virtual void OnTriggerStay2D(Collider2D collider)
+    {
+
+    }
+
+
+    public Bounds getBounds(){
 
 		Bounds bounds = new Bounds();
 
@@ -115,6 +134,12 @@ public class ActorComponent : MonoBehaviour {
 		return bounds;
 
 	}
+
+    public Bounds getRendererBounds() {
+
+        return rend.bounds;
+
+    }
 
 	public Collider2D[] getColliders(){
 		return colls;

@@ -22,6 +22,11 @@ public class ColliderInfo{
 
 public abstract class Actor {
 
+    public List<SpriteComposition> childrenSprites = new List<SpriteComposition>();
+
+    public delegate void OnChangeSpriteKey();
+    public OnChangeSpriteKey onChangeSpriteKey;
+
 	protected World world = World.getInstance();
 
 	public int id = 0;
@@ -50,5 +55,5 @@ public abstract class Actor {
 	public float worldMovementMultiplier = 1;
 
 	public bool hasRigidbody = true;
-
+    public bool indestructable = false;
 }

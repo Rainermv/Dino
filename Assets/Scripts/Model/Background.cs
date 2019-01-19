@@ -8,6 +8,9 @@ public class Background : Actor {
 		spriteKey = "Background/BG";
 		depth = 0;
 
+        name = "Background";
+        indestructable = true;
+
 		//worldMovementMultiplier = 0.5f;
 		//affectedByWorldMovement = false;
 

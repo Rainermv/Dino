@@ -21,20 +21,23 @@ public abstract class Character : Actor  {
 	public float gravityScaleBase = 1;
 	public float gravityScaleFalling = 3f;
 
-	protected void setCollider(Vector2 size, Vector2 colliderOffset){
+    public float collisionPullbackVelocity;
 
-		ColliderInfo boxCollider = new ColliderInfo ();
-		boxCollider.type = ColliderType.Box;
-		//boxCollider.size = new Vector2(width,height);
-		boxCollider.size = size;
-		//boxCollider.offset = new Vector2(offset_x, -0.1f);
-		boxCollider.offset =colliderOffset;
-		boxCollider.materialKey = "Player";
-		colliders.Add (boxCollider);
+    protected void setCollider(Vector2 size, Vector2 colliderOffset, string materialKey)
+    {
 
-	}
+        ColliderInfo boxCollider = new ColliderInfo();
+        boxCollider.type = ColliderType.Box;
+        //boxCollider.size = new Vector2(width,height);
+        boxCollider.size = size;
+        //boxCollider.offset = new Vector2(offset_x, -0.1f);
+        boxCollider.offset = colliderOffset;
+        boxCollider.materialKey = materialKey;
+        colliders.Add(boxCollider);
 
-	protected void addCharacterState(CharacterAnimationType animationType,  string animationKey, Vector2 animationOffset){
+    }
+
+    protected void addCharacterState(CharacterAnimationType animationType,  string animationKey, Vector2 animationOffset){
 
 		this.animationStates.Add( animationType, new CharacterAnimationState (animationType, animationKey, animationOffset) );
 

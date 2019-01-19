@@ -2,17 +2,16 @@
 using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
-[RequireComponent (typeof (PlayerController))]
+[RequireComponent (typeof (InterfaceController))]
 public class GameController : MonoBehaviour {
 	
 	private ActorFactory objFactory;
 	private World world;
-	private PlayerController playerController;
+	private InterfaceController playerController;
 
 	private ActorComponent[] backgroundArray;
-
-	public Text distanceScore;
 
 	public bool createAirPlatforms = true;
 	public bool manageStrategies = true;
@@ -28,7 +27,7 @@ public class GameController : MonoBehaviour {
 		objFactory = ActorFactory.getInstance();
 		world = World.getInstance();
 
-		playerController = GetComponent<PlayerController> ();
+		playerController = GetComponent<InterfaceController> ();
 	
 	}
 		
@@ -46,8 +45,10 @@ public class GameController : MonoBehaviour {
 
 		backgroundArray = new ActorComponent[3];
 		backgroundArray[0] = objFactory.buildActor (new Background ());
-		//backgroundArray[1] = objFactory.buildActor (new Background ());
-		//backgroundArray[2] = objFactory.buildActor (new Background ());
+		backgroundArray[1] = objFactory.buildActor (new Background ());
+		backgroundArray[2] = objFactory.buildActor (new Background ());
+
+        StartCoroutine(RoutineParallaxBackground());
 
 		CreateInitialPlatforms ();
 	
@@ -56,7 +57,9 @@ public class GameController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-		distanceScore.text = "Distance: " + world.TRAVEL_DISTANCE.ToString("N0");
+		
+
+
 	
 	}
 
@@ -133,9 +136,15 @@ public class GameController : MonoBehaviour {
 
 						float diff = world.TRAVEL_DISTANCE - world.FLOOR_PLATFORM_SIZE * ticks;
 
-						ActorComponent obstacle = objFactory.buildGroundPlatform (type, world.X_SPAWN - diff);
+						ActorComponent platform = objFactory.buildGroundPlatform (type, world.X_SPAWN - diff);
 
-						lastType = type;
+                        //if (Random.Range(0, 1) <= world.PROP_SPAWN_CHANCE_FLOOR) {
+
+                        SpawnProp(platform, objFactory.buildProp(new Prop()));
+
+                        //}
+
+                        lastType = type;
 
 						if (world.GENERATION_STRATEGY != PlatformGenerationStrategy.Ground) {
 							chunks--;
@@ -164,32 +173,65 @@ public class GameController : MonoBehaviour {
 
 	private IEnumerator RoutineParallaxBackground(){
 
-		float ticks = 0;
+        float PARALAX_SPEED = 0.05f;
 
+        float sizeX = backgroundArray[0].getRendererBounds().size.x;
+
+        //float ticks = 0;
+
+        float p = world.SCREEN_LEFT;
 		foreach (ActorComponent backgroundActor in backgroundArray) {
 
 			Transform t = backgroundActor.transform;
 			Background bg = backgroundActor.actor as Background;
 
-			//t.position = bg.startingPosition + new Vector2 ( t.
+            t.position = bg.startingPosition + new Vector2(p, t.position.y);
+
+            p += sizeX;
 		}
 
+
+        /*
 		while (true) {
 
-			if ( world.TRAVEL_DISTANCE >= world.PLATFORM_FREQUENCY * ticks){
+            foreach (ActorComponent backgroundActor in backgroundArray) {
 
-				ticks += 1;
-			}
+                Transform t = backgroundActor.transform;
+                Background bg = backgroundActor.actor as Background;
+
+                if (t.position.x <= world.SCREEN_LEFT - (sizeX / 2)) {
+                    t.position = new Vector2(world.SCREEN_RIGHT + (sizeX / 2), t.position.y);
+
+                    
+                } else {
+                    // float newX = t.position.x + (world.BASE_SPEED.x * PARALAX_RATE);
+                    float newX = t.position.x - (PARALAX_SPEED * Time.deltaTime);
+                    t.position = new Vector2(newX, t.position.y);
+                }
+
+                print(t.position);
+
+
+
+            }
+        
+
+            //if ( world.TRAVEL_DISTANCE >= world.PLATFORM_FREQUENCY * ticks){
+
+			//    ticks += 1;
+			//}
 
 			yield return null;
 
 		}
+        */
 
+        yield return null;
 
-	}
+    }
 
-	// every 2 seconds perform the action
-	private IEnumerator RoutineCreateAirPlatforms() {
+    // every 2 seconds perform the action
+    private IEnumerator RoutineCreateAirPlatforms() {
 
 		float airTicks = 0;
 		//float floorTicks = 0;
@@ -202,18 +244,17 @@ public class GameController : MonoBehaviour {
 					ActorComponent platform = objFactory.buildAirPlatform ();
 					AdjustToBounds (platform);
 
-					if (Random.Range (0, 1) <= world.ENEMY_SPAWN_CHANCE_PLATFORMS) {
+					if (Random.Range (0, 1f) <= world.ENEMY_SPAWN_CHANCE_PLATFORMS) {
 
-						ActorComponent enemy = objFactory.buildEnemy ();
+                        //SpawnActor(platform, objFactory.buildEnemy("ZOMBIES"));
+                        SpawnActor(platform, objFactory.buildEnemy("BUMPER"));
 
-						float platformSizeY = (platform.getColliders () [0] as BoxCollider2D).size.y;
+                    }
+                    //if (Random.Range(0, 1) <= world.PICKUP_SPAWN_CHANCE_PLATFORMS){
 
-						BoxCollider2D enemyCollider = enemy.getColliders () [0] as BoxCollider2D;
-						float enemySizeY = enemyCollider.size.y;
+                    //       SpawnActor(platform, objFactory.buildPickup(PickupEffectType.SPEED));
 
-						enemy.transform.position = platform.transform.position;
-						enemy.transform.Translate (0, platformSizeY * 0.5f + enemySizeY * 0.5f - enemyCollider.offset.y, 0);							
-					}
+                    //}
 				}
 					
 				airTicks += 1;
@@ -224,14 +265,41 @@ public class GameController : MonoBehaviour {
 		}
 	}
 
+    private void SpawnActor(ActorComponent platform, ActorComponent actor)
+    {
+
+        float platformSizeY = (platform.getColliders()[0] as BoxCollider2D).size.y;
+
+        BoxCollider2D collider = actor.getColliders()[0] as BoxCollider2D;
+        float sizeY = collider.size.y;
+
+        actor.transform.position = platform.transform.position;
+        actor.transform.Translate(0, platformSizeY * 0.5f + sizeY * 0.5f - collider.offset.y, 0);
+
+    }
+
+    private void SpawnProp(ActorComponent platform, ActorComponent prop) {
+
+        float platformSizeY = platform.getRendererBounds().size.y;
+        float propSizeY = prop.getRendererBounds().size.y;
+
+        prop.transform.position = platform.transform.position;
+        prop.transform.Translate(0, platformSizeY * 0.5f + propSizeY * 0.5f, 0);
+
+    }
+
 	private IEnumerator RoutineIncreaseDifficulty() {
 		while (true) {
 
-			yield return new WaitForSeconds(world.DIFICULTY_MULTIPLIER_TIME);
+			yield return new WaitForSeconds(world.DIFICULTY_INCREASE_TIME);
 
 			if (increaseDifficulty){
-				world.BASE_SPEED *= world.DIFICULTY_MULTIPLIER;
-				world.SPAWN_TIMER -= world.SPAWN_TIMER * world.DIFICULTY_MULTIPLIER;
+
+                float x = world.BASE_SPEED.x - world.DIFFICULTY_INCREASE;
+                float y = world.BASE_SPEED.y;
+
+                world.BASE_SPEED = new Vector2(x, y);
+				world.SPAWN_TIMER -= world.SPAWN_TIMER - world.DIFFICULTY_INCREASE;
 			}
 
 		}
@@ -255,13 +323,7 @@ public class GameController : MonoBehaviour {
 		obj.transform.Translate (0, diff, 0);
 	}
 
-	public void RestartGame(){
-
-		//print ("click");
-
-		Application.LoadLevel(Application.loadedLevel);
-		World.restart ();
-	}
+	
 
 
 }

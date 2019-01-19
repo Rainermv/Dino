@@ -35,19 +35,19 @@ public class FloorPlatformTemplateGenerator  {
 		TileType[,] center = new TileType[size,1];
 		TileType[,] right = new TileType[size,1];
 
-		left [0, 0] = TileType.SNOW_SURFACE_LEFT;
-		center [0, 0] = TileType.SNOW_SURFACE_CENTER;
-		right [0, 0] = TileType.SNOW_SURFACE_CENTER;
+		left [0, 0] = TileType.SURFACE_LEFT;
+		center [0, 0] = TileType.SURFACE_CENTER;
+		right [0, 0] = TileType.SURFACE_CENTER;
 
 		for (int i = 1; i < size -1; i++) {
-			left [i,0] = TileType.SNOW_SURFACE_CENTER;
-			center [i,0] = TileType.SNOW_SURFACE_CENTER;
-			right [i,0] = TileType.SNOW_SURFACE_CENTER;
+			left [i,0] = TileType.SURFACE_CENTER;
+			center [i,0] = TileType.SURFACE_CENTER;
+			right [i,0] = TileType.SURFACE_CENTER;
 		}
 
-		left [size-1, 0] = TileType.SNOW_SURFACE_CENTER;
-		center [size-1, 0] = TileType.SNOW_SURFACE_CENTER;
-		right [size-1, 0] = TileType.SNOW_SURFACE_RIGHT;
+		left [size-1, 0] = TileType.SURFACE_CENTER;
+		center [size-1, 0] = TileType.SURFACE_CENTER;
+		right [size-1, 0] = TileType.SURFACE_RIGHT;
 
 		templates.Add(FloorPlatformType.LEFT, left);
 		templates.Add(FloorPlatformType.CENTER, center);

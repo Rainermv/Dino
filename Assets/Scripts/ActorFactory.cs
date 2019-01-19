@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-using UnityEngine.Experimental.Director;
+//using UnityEngine.Director;
 
 public class ActorFactory  {
 
@@ -23,6 +23,23 @@ public class ActorFactory  {
 
 	#region BUILDERS
 
+    public PickupComponent buildPickup(PickupEffectType effectType)
+    {
+        Pickup actorPickup = new Pickup(effectType);
+
+        GameObject actorGameObject = createGameObject(actorPickup);
+        addRigidbody2D(actorGameObject, actorPickup);
+
+        foreach (ColliderInfo coll in actorPickup.colliders) {
+            addCollider2D(actorGameObject, coll);
+        }
+
+        GameObject actorView = createChild(actorGameObject, "Pickup view", Vector2.zero);
+        addSpriteRenderer(actorView, actorPickup);
+
+        return addPickupComponent(actorGameObject, actorPickup);
+    }
+
 	public PlayerComponent buildPlayer(){
 
 		Player playerModel = new Player();
@@ -42,34 +59,70 @@ public class ActorFactory  {
 		return addPlayerComponent(actorGameObject, playerModel);
 	}
 
-	public EnemyComponent buildEnemy(){
+	public EnemyComponent buildEnemy(string type){
 
-		Enemy enemyModel = new Enemy();
+        switch (type) {
+            case "ZOMBIE": return buildEnemyZombie();
+            case "BUMPER": return buildEnemyBumper();
+        }
 
-		GameObject actorGameObject = createGameObject(enemyModel);
-		GameObject actorView = createChild (actorGameObject, "Enemy view", Vector2.zero);
-
-		addAnimator (actorView, enemyModel);
-		addSpriteRenderer(actorView, enemyModel);
-
-		foreach (ColliderInfo coll in enemyModel.colliders) {
-			addCollider2D (actorGameObject, coll);
-		}
-
-		addRigidbody2D(actorGameObject, enemyModel);
-
-		EnemyComponent enemyComponent = addEnemyComponent(actorGameObject, enemyModel);
-
-		AI enemyAI = AILoader.getInstance ().GetAI (enemyModel.AIKey);
-		enemyComponent.EnemyAI = enemyAI;
-
-		return enemyComponent;
+        return buildEnemyZombie();
+		
 	}
+
+    public EnemyComponent buildEnemyZombie() {
+
+        Zombie enemyModel = new Zombie();
+
+        GameObject actorGameObject = createGameObject(enemyModel);
+        GameObject actorView = createSprites(actorGameObject, enemyModel);
+        //GameObject actorView = createChild(actorGameObject, "Enemy view", Vector2.zero);
+
+        addAnimator(actorView, enemyModel);
+       // addSpriteRenderer(actorView, enemyModel);
+
+        foreach (ColliderInfo coll in enemyModel.colliders) {
+            addCollider2D(actorGameObject, coll);
+        }
+
+        addRigidbody2D(actorGameObject, enemyModel);
+
+        EnemyComponent enemyComponent = addEnemyComponent(actorGameObject, enemyModel);
+
+        AI enemyAI = AILoader.getInstance().GetAI(enemyModel.AIKey);
+        enemyComponent.EnemyAI = enemyAI;
+
+        return enemyComponent;
+
+    }
+
+    public EnemyComponent buildEnemyBumper() {
+
+        Bumper bumperModel = new Bumper();
+
+        GameObject actorGameObject = createGameObject(bumperModel);
+        GameObject actorView = createSprites(actorGameObject, bumperModel);
+
+        addAnimator(actorView, bumperModel);
+
+        foreach (ColliderInfo coll in bumperModel.colliders) {
+            addCollider2D(actorGameObject, coll);
+        }
+
+        addRigidbody2D(actorGameObject, bumperModel);
+
+        EnemyComponent enemyComponent = addEnemyComponent(actorGameObject, bumperModel);
+
+        AI enemyAI = AILoader.getInstance().GetAI(bumperModel.AIKey);
+        enemyComponent.EnemyAI = enemyAI;
+
+
+        return enemyComponent;
+    }
 		
 	public ActorComponent buildActor(Actor actorModel){
 
 		GameObject actorGameObject = createGameObject(actorModel);
-
 
 		addSpriteRenderer(actorGameObject, actorModel);
 
@@ -85,6 +138,24 @@ public class ActorFactory  {
 			
 	}
 
+    public ActorComponent buildBackground(Background backgroundModel) {
+
+        ActorComponent actor = this.buildActor(backgroundModel);
+
+        return actor;
+
+    }
+
+    public ActorComponent buildProp(Prop propModel) {
+
+        GameObject actorGameObject = createGameObject(propModel);
+
+        addSpriteRenderer(actorGameObject, propModel);
+
+        return addActorComponent(actorGameObject, propModel);
+
+    }
+
 	public ActorComponent buildAirPlatform(){
 
 		return buildPlatform(Platform.AerialPlatform());
@@ -93,7 +164,9 @@ public class ActorFactory  {
 
 	public ActorComponent buildGroundPlatform(FloorPlatformType type, float xPosition){
 
-		return buildPlatform(Platform.FloorPlatform(type, xPosition));
+        ActorComponent platform = this.buildPlatform(Platform.FloorPlatform(type, xPosition));
+
+        return platform;
 	}
 
 	private ActorComponent buildPlatform(Platform platformModel){
@@ -143,6 +216,27 @@ public class ActorFactory  {
 		return actorGameObject;
 	}
 
+    private GameObject createSprites(GameObject parent, Actor actorModel ) {
+
+        GameObject baseSprite = this.createChild(parent, actorModel.name, actorModel.startingPosition);
+        addSpriteRenderer(baseSprite, actorModel);
+
+        foreach (SpriteComposition sprite in actorModel.childrenSprites) {
+            GameObject childSprite = this.createChild(parent, sprite.name, sprite.startingPosition);
+            SpriteRenderer sprRend = addSpriteRenderer(childSprite, sprite);
+
+            sprite.onChangeSpriteKey = delegate () {
+
+                sprRend.sprite = getSprite(sprite.spriteKey);
+
+            };
+
+        }
+
+        return baseSprite;
+
+    }
+
 	
 	private GameObject createChild( GameObject parentGameObject, string name,  Vector2 localPosition ){
 
@@ -165,7 +259,9 @@ public class ActorFactory  {
 	private SpriteRenderer addSpriteRenderer(GameObject obj, Actor actor){
 
 		SpriteRenderer sr = obj.AddComponent<SpriteRenderer>();
-		sr.sprite = Resources.Load<Sprite> ("Sprites/" + actor.spriteKey);
+
+        sr.sprite = this.getSprite(actor.spriteKey);
+
 		//sr.sprite = null;
 		sr.color = actor.tint;
 		sr.sortingOrder = actor.depth;
@@ -174,7 +270,21 @@ public class ActorFactory  {
 
 	}
 
+    public Sprite getSprite(string spriteKey) {
+
+        string spritePath = "Sprites/" + spriteKey;
+        Sprite sprite = Resources.Load<Sprite>(spritePath);
+
+        if (sprite == null) {
+            Debug.LogWarning("Sprite " + spritePath + " not found");
+        }
+
+        return sprite;
+
+    }
+
 	private Collider2D addCollider2D(GameObject obj, ColliderInfo collInfo){
+
 
 		Collider2D coll;
 
@@ -204,6 +314,7 @@ public class ActorFactory  {
 
 		coll.offset = collInfo.offset;
 		coll.sharedMaterial = Resources.Load<PhysicsMaterial2D> ("PhysicsMaterials/" + collInfo.materialKey);
+        coll.isTrigger = collInfo.trigger;
 	
 		return coll;
 
@@ -251,21 +362,28 @@ public class ActorFactory  {
 
 	}
 
-	private EnemyComponent addEnemyComponent(GameObject obj, Enemy actorEnemy){
+	private EnemyComponent addEnemyComponent(GameObject obj, Character actorEnemy){
 
-		EnemyComponent el = obj.AddComponent<EnemyComponent>();
-		el.actor = actorEnemy;
+		EnemyComponent ec = obj.AddComponent<EnemyComponent>();
+		ec.actor = actorEnemy;
 		//el.actor.id = id++;
 
-		return el;
+		return ec;
 
 	}
+
+    private PickupComponent addPickupComponent(GameObject obj, Pickup actorPickup) {
+
+        PickupComponent pickupComponent = obj.AddComponent<PickupComponent>();
+        pickupComponent.actor = actorPickup;
+
+        return pickupComponent;
+    }
 
 	private PlayerComponent addPlayerComponent(GameObject obj, Player actorPlayer){
 
 		PlayerComponent pl = obj.AddComponent<PlayerComponent>();
 		pl.actor = actorPlayer;
-		//pl.actor.id = id++;
 
 		return pl;
 

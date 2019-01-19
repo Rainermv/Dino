@@ -1,16 +1,24 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine.Experimental.Director;
+using UnityEngine.Playables;
+using UnityEngine.Animations;
 
 public class CharacterComponent : ActorComponent {
 
-	//int ignoreMask = 8; // Character layer
-	Character character;
+   
 
-	protected Animator anim;
+    //int ignoreMask = 8; // Character layer
+    Character character;
 
-	protected AnimationClipPlayable currentAnimation;
+	protected Animator animatorComponent;
+
+    //public AnimationClip animationClip;
+
+    protected PlayableGraph playableGraph;
+    //protected AnimationPlayableOutput playableOutput;
+    //protected AnimationClipPlayable clipPlayable;
+
 	protected CharacterAnimationState currentCharacterState;
 
 	private Dictionary<string, CharacterRay> characterRays =  new Dictionary<string, CharacterRay> (); 
@@ -34,8 +42,11 @@ public class CharacterComponent : ActorComponent {
 	protected override void Awake () {
 		base.Awake ();
 
-		anim = GetComponentsInChildren<Animator> ()[0];
+        Animator[] animators = GetComponentsInChildren<Animator>();
 
+        if (animators.Length > 0) {
+            animatorComponent = GetComponentsInChildren<Animator>()[0];
+        }
 	}
 
 	// Use this for initialization
@@ -44,7 +55,12 @@ public class CharacterComponent : ActorComponent {
 
 		character = actor as Character;
 
-		SetState (character.initialStateType);
+        //playableGraph = PlayableGraph.Create();
+        //playableGraph.SetTimeUpdateMode(DirectorUpdateMode.GameTime);
+
+        //playableOutput = AnimationPlayableOutput.Create(playableGraph, character.name, GetComponent<Animator>());
+
+        SetState (character.initialStateType);
 
 		//Bounds bounds = getBounds ();
 
@@ -62,11 +78,59 @@ public class CharacterComponent : ActorComponent {
 			new Vector2(0.5f, -0.5f), 
 			Color.red ));
 
-		//raycastOrigins.Add ("cliffCast", new Vector2 (bounds.min.x , bounds.min.y - transform.position.y));
+        //raycastOrigins.Add ("cliffCast", new Vector2 (bounds.min.x , bounds.min.y - transform.position.y));
 
-	
+    }
 
-	}
+    public void SetState(CharacterAnimationType stateType){
+
+        currentCharacterState = character.animationStates[stateType];
+
+        if (animatorComponent != null) {
+
+            AnimationClip animationClip = AnimationFactory.getInstance().getAnimationClip(character.name, currentCharacterState.animationKey);
+            AnimationPlayableUtilities.PlayClip(animatorComponent, animationClip, out playableGraph);
+
+            animatorComponent.gameObject.transform.localPosition = currentCharacterState.animationOffset;
+            animatorComponent.updateMode = AnimatorUpdateMode.UnscaledTime;
+
+        }
+
+        if (character.childrenSprites.Count > 0) {
+
+            foreach (SpriteComposition sprite in character.childrenSprites) {
+
+                sprite.changeState(stateType);
+
+            }
+
+
+        }
+
+        
+
+        /*
+        if (clipPlayable.IsValid()) {
+			clipPlayable.Destroy ();
+		}
+
+       
+        
+		//string animKey = character.animationKeys [state];
+		clipPlayable = AnimationFactory.getInstance ().loadAnimation (playableGraph, character.name, currentCharacterState.animationKey);
+
+		anim.gameObject.transform.localPosition = currentCharacterState.animationOffset;
+
+        //print (anim == null);
+
+        //anim.Play (currentAnimation);
+        playableGraph.Play();
+
+
+        anim.updateMode = AnimatorUpdateMode.UnscaledTime;
+        */
+    }
+
 
 	public void Flip(){
 
@@ -80,25 +144,7 @@ public class CharacterComponent : ActorComponent {
 
 	}
 
-	public void SetState(CharacterAnimationType stateType){
-
-		if (currentAnimation.IsValid()) {
-			currentAnimation.Destroy ();
-		}
-
-		currentCharacterState = character.animationStates [stateType];
-		//string animKey = character.animationKeys [state];
-		currentAnimation = AnimationFactory.getInstance ().loadAnimation (character.name, currentCharacterState.animationKey);
-
-		anim.gameObject.transform.localPosition = currentCharacterState.animationOffset;
-
-		//print (anim == null);
-
-		anim.Play (currentAnimation);
-
-		anim.updateMode = AnimatorUpdateMode.UnscaledTime;
-	}
-
+	
 
 	
 	// Update is called once per frame
@@ -122,7 +168,14 @@ public class CharacterComponent : ActorComponent {
 
 	}
 
-	public void ActionJump(){
+    void OnDisable(){
+
+        // Destroys all Playables and Outputs created by the graph.
+
+        playableGraph.Destroy();
+    }
+
+    public void ActionJump(){
 
 		rb.AddForce( (actor as Character).jumpForce);
 

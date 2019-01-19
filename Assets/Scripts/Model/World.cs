@@ -13,8 +13,9 @@ public class World {
 
 	public float SPAWN_TIMER = 2;
 
-	public float DIFICULTY_MULTIPLIER = 1.1f;
-	public float DIFICULTY_MULTIPLIER_TIME = 5f;
+    //public float DIFICULTY_MULTIPLIER = 1.1f;
+    public float DIFFICULTY_INCREASE = 1;
+	public float DIFICULTY_INCREASE_TIME = 15f;
 
 	public float SCREEN_TOP = 5f;
 	public float SCREEN_BOTTOM = -5f;
@@ -52,9 +53,14 @@ public class World {
 	public float STRATEGY_CHANGE_FREQUENCY = 25f;
 	public float STRATEGY_CHANGE_CHANCE = 0.5f;
 
-	public float ENEMY_SPAWN_CHANCE_PLATFORMS = 1f;
+	public float ENEMY_SPAWN_CHANCE_PLATFORMS = 0.3f;
+    public float ENEMY_SPAWN_CHANCE_GROUND = 0.1f;
 
-	private World(){
+    public float PROP_SPAWN_CHANCE_FLOOR = 0.2f;
+
+    public float PICKUP_SPAWN_CHANCE_PLATFORMS = 0.5f;
+
+    private World(){
 		
 		SCREEN_WIDTH = SCREEN_RIGHT - SCREEN_LEFT;
 		SCREEN_MIDPOINT = SCREEN_LEFT + SCREEN_WIDTH / 2;
