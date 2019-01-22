@@ -58,9 +58,17 @@ public class Platform : Actor {
 		TileType[,] template = AerialPlatformTemplateGenerator.getInstance().GetRandom ();
 
 		aerialPlatform.setWithTemplate (template);
-		aerialPlatform.addBoxCollider ();
+        aerialPlatform.addBoxCollider ();
+        //aerialPlatform.addEdgeCollider();
 
-		aerialPlatform.setRandomPosition ();
+        EffectorInfo effector = new EffectorInfo();
+        effector.type = EffectorType.Platform;
+        effector.oneWay = true;
+        effector.surfaceArc = 75;
+
+        aerialPlatform.effectors.Add(effector);
+
+        aerialPlatform.setRandomPosition ();
 
 		return aerialPlatform;
 	}

@@ -162,7 +162,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.1745283, g: 1, b: 0.20427501, a: 1}
+  m_Color: {r: 0.14778392, g: 0.38679248, b: 0.15575087, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -388,11 +388,11 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 0420eb0832e4cb74f9cb5abc547cf44c, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 1d079ba1bd99e8d4fa080c73a22153b2, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
-  Loop: 0
+  Loop: 1
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
@@ -1053,7 +1053,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.10182214, g: 0.7830189, b: 0, a: 1}
+  m_Color: {r: 0.17471342, g: 0.6792453, b: 0.0993236, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:

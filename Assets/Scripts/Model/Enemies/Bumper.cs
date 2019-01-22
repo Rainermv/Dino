@@ -65,6 +65,6 @@ public class Bumper : Character {
 
         jumpForce = new Vector2(0, 0);
 
-        collisionPullbackVelocity = -10f;
+        collisionPullbackVelocity = -20f;
     }
 }

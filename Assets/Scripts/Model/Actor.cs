@@ -2,23 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public enum ColliderType {
-
-	Box,
-	Circle,
-	Edge
-
-}
-
-public class ColliderInfo{
-
-	public ColliderType type = ColliderType.Box;
-	public Vector2 size = new Vector2(1,1);
-	public Vector2 offset = new Vector2(0,0);
-	public string materialKey = "Default";
-	public bool trigger = false;
-
-}
 
 public abstract class Actor {
 
@@ -44,8 +27,9 @@ public abstract class Actor {
 	public Vector2 scale = new Vector2(1,1);
 
 	public List<ColliderInfo> colliders = new List<ColliderInfo> ();
-	
-	public bool isKinematic = false;
+    public List<EffectorInfo> effectors = new List<EffectorInfo>();
+
+    public bool isKinematic = false;
 	public Vector2 velocity = Vector2.zero;
 
 	public bool constrainRotation = false;

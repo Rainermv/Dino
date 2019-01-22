@@ -268,7 +268,8 @@ public class GameController : MonoBehaviour {
     private void SpawnActor(ActorComponent platform, ActorComponent actor)
     {
 
-        float platformSizeY = (platform.getColliders()[0] as BoxCollider2D).size.y;
+        //float platformSizeY = (platform.getColliders()[0] as BoxCollider2D).size.y;
+        float platformSizeY = platform.getRendererBounds().size.y;
 
         BoxCollider2D collider = actor.getColliders()[0] as BoxCollider2D;
         float sizeY = collider.size.y;

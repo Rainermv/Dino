@@ -192,6 +192,10 @@ public class ActorFactory  {
 			addCollider2D(actorGameObject, coll);
 		}
 
+        foreach (EffectorInfo effector in platformModel.effectors) {
+            addEffector2D(actorGameObject, effector);
+        }
+
 		Rigidbody2D rb = addRigidbody2D(actorGameObject, platformModel);
 
 		return addActorComponent(actorGameObject, platformModel);
@@ -283,6 +287,25 @@ public class ActorFactory  {
 
     }
 
+    private Effector2D addEffector2D(GameObject obj, EffectorInfo effector) {
+
+        switch (effector.type){
+
+            case EffectorType.Platform:
+                PlatformEffector2D eff2D;
+                eff2D = obj.AddComponent<PlatformEffector2D>();
+                eff2D.useOneWay = effector.oneWay;
+                eff2D.useColliderMask = false;
+                eff2D.surfaceArc = effector.surfaceArc;
+                break;
+
+        }
+
+
+        return null;
+ 
+    }
+
 	private Collider2D addCollider2D(GameObject obj, ColliderInfo collInfo){
 
 
@@ -315,6 +338,7 @@ public class ActorFactory  {
 		coll.offset = collInfo.offset;
 		coll.sharedMaterial = Resources.Load<PhysicsMaterial2D> ("PhysicsMaterials/" + collInfo.materialKey);
         coll.isTrigger = collInfo.trigger;
+        coll.usedByEffector = collInfo.usedByEffector;
 	
 		return coll;
 
