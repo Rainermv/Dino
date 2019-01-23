@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -38,7 +39,11 @@ public class World {
 
 	public float TRAVEL_DISTANCE;
 
-	public float PLATFORM_FREQUENCY = 8;
+    Action starsPickedValueChanged;
+
+    private int _STARS_PICKED = 0;
+
+    public float PLATFORM_FREQUENCY = 8;
 
 	public int GROUND_CHUNK_MIN = 1;
 	public int GROUND_CHUNK_MAX = 3;
@@ -54,11 +59,26 @@ public class World {
 	public float STRATEGY_CHANGE_CHANCE = 0.5f;
 
 	public float ENEMY_SPAWN_CHANCE_PLATFORMS = 0.3f;
-    public float ENEMY_SPAWN_CHANCE_GROUND = 0.1f;
+    public float ENEMY_SPAWN_CHANCE_GROUND = 0.3f;
 
-    public float PROP_SPAWN_CHANCE_FLOOR = 0.2f;
+    public float PROP_SPAWN_CHANCE_GROUND = 1f;
 
-    public float PICKUP_SPAWN_CHANCE_PLATFORMS = 0.5f;
+    public float PICKUP_SPAWN_CHANCE_PLATFORMS = 0.3f;
+    public float PICKUP_SPAWN_CHANCE_GROUND = 0.1f;
+
+    public int STARS_PICKED {
+        get {
+            return _STARS_PICKED;
+        }
+
+        set {
+            _STARS_PICKED = value;
+
+            if (starsPickedValueChanged != null) {
+                starsPickedValueChanged();
+            }
+        }
+    }
 
     private World(){
 		
@@ -76,7 +96,7 @@ public class World {
 
 	public void randomStrategy(){
 
-		int id = Random.Range (0, GENERATION_STRATEGY_LIST.Count);
+		int id = UnityEngine.Random.Range (0, GENERATION_STRATEGY_LIST.Count);
 		GENERATION_STRATEGY = GENERATION_STRATEGY_LIST [id];
 
 	}
@@ -100,6 +120,11 @@ public class World {
 		TRAVEL_DISTANCE += BASE_SPEED.magnitude * Time.deltaTime;
 
 	}
+
+    public void registerStarsPickedValueChange(Action callback) {
+
+        starsPickedValueChanged += callback;
+    }
 	
 	
 	

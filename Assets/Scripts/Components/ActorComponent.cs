@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class ActorComponent : MonoBehaviour {
 	
@@ -10,6 +11,8 @@ public class ActorComponent : MonoBehaviour {
 	public Actor actor;
 
     SpriteRenderer rend;
+
+    //List<GameObject> childrendObjects = new List<GameObject>();
 
 
     public Vector2 getSpriteSize(){

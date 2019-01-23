@@ -51,6 +51,8 @@ public class GameController : MonoBehaviour {
         StartCoroutine(RoutineParallaxBackground());
 
 		CreateInitialPlatforms ();
+
+        
 	
 	}
 	
@@ -62,6 +64,12 @@ public class GameController : MonoBehaviour {
 
 	
 	}
+
+    void onStarsPickupChange(int value) {
+
+
+
+    }
 
 	void FixedUpdate(){
 
@@ -142,7 +150,18 @@ public class GameController : MonoBehaviour {
 
                         SpawnProp(platform, objFactory.buildProp(new Prop()));
 
-                        //}
+                        if (Random.Range(0, 1f) <= world.ENEMY_SPAWN_CHANCE_GROUND) {
+
+                            float translate = Random.Range(-world.FLOOR_PLATFORM_SIZE *0.5f, world.FLOOR_PLATFORM_SIZE *0.5f);
+                            SpawnActor(platform, objFactory.buildEnemy("BUMPER"), translate);
+
+                        }
+                        if (Random.Range(0, 1f) <= world.PICKUP_SPAWN_CHANCE_GROUND) {
+
+                            float translate = Random.Range(-world.FLOOR_PLATFORM_SIZE * 0.5f, world.FLOOR_PLATFORM_SIZE * 0.5f);
+                            SpawnActor(platform, objFactory.buildPickup(PickupEffectType.STAR), translate);
+
+                        }
 
                         lastType = type;
 
@@ -171,9 +190,47 @@ public class GameController : MonoBehaviour {
 		}
 	}
 
-	private IEnumerator RoutineParallaxBackground(){
+    private IEnumerator RoutineCreateAirPlatforms() {
 
-        float PARALAX_SPEED = 0.05f;
+        float airTicks = 0;
+        //float floorTicks = 0;
+
+        while (true) {
+
+            if (world.TRAVEL_DISTANCE >= world.PLATFORM_FREQUENCY * airTicks) {
+
+                if (createAirPlatforms) {
+                    ActorComponent platform = objFactory.buildAirPlatform();
+                    AdjustToBounds(platform);
+
+                    float platformSizeX = platform.getRendererBounds().size.x;
+
+                    if (Random.Range(0, 1f) <= world.ENEMY_SPAWN_CHANCE_PLATFORMS) {
+
+                        float translate = Random.Range(-platformSizeX * 0.5f, platformSizeX * 0.5f);
+                        SpawnActor(platform, objFactory.buildEnemy("BUMPER"), translate);
+
+                    }
+                    if (Random.Range(0, 1f) <= world.PICKUP_SPAWN_CHANCE_PLATFORMS) {
+
+                        //float translate = Random.Range(-platformSizeX * 0.5f, platformSizeX * 0.5f);
+                        SpawnActor(platform, objFactory.buildPickup(PickupEffectType.STAR), 0);
+
+                    }
+
+                }
+
+                airTicks += 1;
+            }
+
+            yield return null;
+
+        }
+    }
+
+    private IEnumerator RoutineParallaxBackground(){
+
+        //float PARALAX_SPEED = 0.05f;
 
         float sizeX = backgroundArray[0].getRendererBounds().size.x;
 
@@ -230,42 +287,9 @@ public class GameController : MonoBehaviour {
 
     }
 
-    // every 2 seconds perform the action
-    private IEnumerator RoutineCreateAirPlatforms() {
+    
 
-		float airTicks = 0;
-		//float floorTicks = 0;
-
-		while (true) {
-		
-			if ( world.TRAVEL_DISTANCE >= world.PLATFORM_FREQUENCY * airTicks){
-
-				if (createAirPlatforms) {
-					ActorComponent platform = objFactory.buildAirPlatform ();
-					AdjustToBounds (platform);
-
-					if (Random.Range (0, 1f) <= world.ENEMY_SPAWN_CHANCE_PLATFORMS) {
-
-                        //SpawnActor(platform, objFactory.buildEnemy("ZOMBIES"));
-                        SpawnActor(platform, objFactory.buildEnemy("BUMPER"));
-
-                    }
-                    //if (Random.Range(0, 1) <= world.PICKUP_SPAWN_CHANCE_PLATFORMS){
-
-                    //       SpawnActor(platform, objFactory.buildPickup(PickupEffectType.SPEED));
-
-                    //}
-				}
-					
-				airTicks += 1;
-			}
-
-			yield return null;
-
-		}
-	}
-
-    private void SpawnActor(ActorComponent platform, ActorComponent actor)
+    private void SpawnActor(ActorComponent platform, ActorComponent actor, float translateX)
     {
 
         //float platformSizeY = (platform.getColliders()[0] as BoxCollider2D).size.y;
@@ -275,7 +299,10 @@ public class GameController : MonoBehaviour {
         float sizeY = collider.size.y;
 
         actor.transform.position = platform.transform.position;
-        actor.transform.Translate(0, platformSizeY * 0.5f + sizeY * 0.5f - collider.offset.y, 0);
+        actor.transform.Translate(
+            translateX, 
+            platformSizeY * 0.5f + sizeY * 0.5f - collider.offset.y , 
+            0);
 
     }
 

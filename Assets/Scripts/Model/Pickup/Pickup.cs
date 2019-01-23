@@ -12,10 +12,10 @@ public class Pickup : Actor  {
 
         switch (effectType)
         {
-            case PickupEffectType.COIN:
-                this.effect = new CoinPickupEffect();
-                this.spriteKey = "pickups/coin";
-                this.name = "Coin";
+            case PickupEffectType.STAR:
+                this.effect = new StarPickupEffect();
+                this.spriteKey = "pickups/Star";
+                this.name = "Star";
                 break;
 
             default:
@@ -28,7 +28,7 @@ public class Pickup : Actor  {
         this.tag = "PICKUP";
         this.layer = this.layer = Layers.CHARACTERS;
 
-        this.depth = 3;
+        this.depth = 5;
 
         //this.tint = Color.white;
 

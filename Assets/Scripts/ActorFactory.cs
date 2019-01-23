@@ -61,12 +61,23 @@ public class ActorFactory  {
 
 	public EnemyComponent buildEnemy(string type){
 
+        EnemyComponent enemy = null;
+
         switch (type) {
-            case "ZOMBIE": return buildEnemyZombie();
-            case "BUMPER": return buildEnemyBumper();
+            case "ZOMBIE":
+                enemy = buildEnemyZombie();
+                break;
+
+            case "BUMPER":
+                enemy = buildEnemyBumper();
+                break;
+
+            default: 
+                enemy = buildEnemyBumper();
+                break;
         }
 
-        return buildEnemyZombie();
+        return enemy;
 		
 	}
 
@@ -348,6 +359,7 @@ public class ActorFactory  {
 
 		Rigidbody2D rb = obj.AddComponent<Rigidbody2D> ();
 		rb.isKinematic = actor.isKinematic;
+        rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
 		//rb.
 
 		if (actor.constrainMovement){

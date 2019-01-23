@@ -9,14 +9,17 @@ public class InterfaceController : MonoBehaviour {
 
     private World world;
 
-    public GameObject UIJump;
-    public GameObject UIRun;
+    public GameObject UIJumps;
+    public GameObject UIDistance;
+    public GameObject UIStars;
 
-    public Text distanceScore;
+    public Text UIStarsScore;
+    public Text UIDistanceScore;
 
     public GameObject GameOverScreen;
 
-    public Text GameOverScore;
+    public Text UIStarsGameOver;
+    public Text UIDistanceGameOver;
 
     public PlayerComponent PlayerAvatar {
 		get {
@@ -38,20 +41,32 @@ public class InterfaceController : MonoBehaviour {
 
         playerAvatar.jumpChange = delegate (int jumps) {
 
-            print(jumps);
-
-            UIJump.BroadcastMessage("setJumps", jumps);
+            UIJumps.BroadcastMessage("setJumps", jumps);
         };
 
         playerAvatar.playerDeath = delegate () {
 
-            UIJump.SetActive(false);
-            UIRun.SetActive(false);
+            UIJumps.SetActive(false);
+            UIStars.SetActive(false);
+            UIDistance.SetActive(false);
 
             GameOverScreen.SetActive(true);
 
-            GameOverScore.text = world.TRAVEL_DISTANCE.ToString("N0") + " m travelled";
+            //UIDistanceGameOver.text = world.TRAVEL_DISTANCE.ToString("N0") + " m travelled";
+            UIStarsGameOver.text = world.STARS_PICKED.ToString();
+
+            print(world.STARS_PICKED.ToString());
         };
+
+        world.registerStarsPickedValueChange(() => {
+            onStarsPickupValueChange();
+        });
+
+        playerAvatar.registerCharacterDiedCallback(() => {
+
+            playerAvatar = null;
+
+        });
 
         //playerAvatar.jumpChange
 
@@ -62,13 +77,13 @@ public class InterfaceController : MonoBehaviour {
 		
 		HandleTouches();
 
-        distanceScore.text = world.TRAVEL_DISTANCE.ToString("N0") + " m";
+        UIDistanceScore.text = world.TRAVEL_DISTANCE.ToString("N0");
 
     }
 	
 	void HandleTouches(){
 		
-		if (Input.GetMouseButtonDown(0)){
+		if (Input.GetMouseButtonDown(0) && playerAvatar != null){
 			
 			Vector3 position = Input.mousePosition;
 			playerAvatar.PlayerJump();
@@ -77,4 +92,10 @@ public class InterfaceController : MonoBehaviour {
 		}
 
 	}
+
+    void onStarsPickupValueChange() {
+
+        UIStarsScore.text = world.STARS_PICKED.ToString("N0");
+
+    }
 }

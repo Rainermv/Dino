@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.Playables;
@@ -6,12 +7,13 @@ using UnityEngine.Animations;
 
 public class CharacterComponent : ActorComponent {
 
-   
+    
 
     //int ignoreMask = 8; // Character layer
     Character character;
 
-	protected Animator animatorComponent;
+
+    protected Animator animatorComponent;
 
     //public AnimationClip animationClip;
 
@@ -175,9 +177,9 @@ public class CharacterComponent : ActorComponent {
         playableGraph.Destroy();
     }
 
-    public void ActionJump(){
+    public void ActionJump(float multiplier = 1f){
 
-		rb.AddForce( (actor as Character).jumpForce);
+		rb.AddForce( (actor as Character).jumpForce * multiplier);
 
 	}
 
@@ -203,6 +205,8 @@ public class CharacterComponent : ActorComponent {
 		return false;
 
 	}
+
+    
 
 
 	/*

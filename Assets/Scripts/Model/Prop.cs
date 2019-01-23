@@ -18,6 +18,8 @@ public class Prop : Actor {
         this.hasRigidbody = false;
         this.isKinematic = true;
 
+        
+
 
     }
 }

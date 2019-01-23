@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections;
 using UnityEngine.Playables;
 using UnityEngine.Animations;
@@ -15,6 +16,7 @@ public class PlayerComponent : CharacterComponent {
     public delegate void PlayerDeath();
     public PlayerDeath playerDeath;
 
+    Action playerDiedCallback;
 
     protected override void Awake(){
 		base.Awake();	
@@ -76,6 +78,9 @@ public class PlayerComponent : CharacterComponent {
 
             playerDeath();
 
+            playerDiedCallback();
+
+            GameObject.Destroy(gameObject);
 
         }
 			
@@ -112,7 +117,7 @@ public class PlayerComponent : CharacterComponent {
 
 			if (contactNormal.y >= 0.5) {
 
-				ActionJump ();
+                ActionJump (1.5f);
 				PlayerActor.jumps += 1;
 
                 jumpChange(PlayerActor.jumps);
@@ -191,7 +196,12 @@ public class PlayerComponent : CharacterComponent {
 					
 			}
 		}
-
 	}
-	
+
+    public void registerCharacterDiedCallback(Action action) {
+
+        playerDiedCallback += action;
+
+    }
+
 }
