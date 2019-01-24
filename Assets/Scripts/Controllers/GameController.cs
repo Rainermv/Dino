@@ -52,29 +52,25 @@ public class GameController : MonoBehaviour {
 
 		CreateInitialPlatforms ();
 
-        
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
+    }
 
-		
+    // Update is called once per frame
+    void Update() {
 
+        if (world.LevelCompleted) {
 
-	
-	}
+            world.BASE_SPEED = Vector2.zero;
+        }
+
+    }
 
     void onStarsPickupChange(int value) {
-
-
 
     }
 
 	void FixedUpdate(){
 
 		world.update ();
-
 	}
 
 	private void CreateInitialPlatforms(){
@@ -98,6 +94,13 @@ public class GameController : MonoBehaviour {
 		float ticks = 0;
 
 		while (true) {
+
+            if (world.IsDistanceTargetResetStrategy) {
+
+                world.resetStrategy();
+                yield break;
+
+            }
 
 			if (world.TRAVEL_DISTANCE >= world.STRATEGY_CHANGE_FREQUENCY * ticks &&
 				Random.Range(0f,1f) < world.STRATEGY_CHANGE_CHANCE) {

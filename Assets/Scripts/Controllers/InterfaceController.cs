@@ -17,9 +17,12 @@ public class InterfaceController : MonoBehaviour {
     public Text UIDistanceScore;
 
     public GameObject GameOverScreen;
+    public GameObject FinishLevelScreen;
 
     public Text UIStarsGameOver;
     public Text UIDistanceGameOver;
+
+    public Slider UIDistanceTargetSlider;
 
     public PlayerComponent PlayerAvatar {
 		get {
@@ -68,7 +71,8 @@ public class InterfaceController : MonoBehaviour {
 
         });
 
-        //playerAvatar.jumpChange
+        world.registerOnLevelFinished(finishLevel);
+
 
     }
 	
@@ -77,13 +81,16 @@ public class InterfaceController : MonoBehaviour {
 		
 		HandleTouches();
 
-        UIDistanceScore.text = world.TRAVEL_DISTANCE.ToString("N0");
+        //UIDistanceScore.text = world.TRAVEL_DISTANCE.ToString("N0");
+
+
+        UIDistanceTargetSlider.value = world.DistanceTargetRatio;
 
     }
 	
 	void HandleTouches(){
 		
-		if (Input.GetMouseButtonDown(0) && playerAvatar != null){
+		if (Input.GetMouseButtonDown(0) && playerAvatar != null && !world.LevelCompleted){
 			
 			Vector3 position = Input.mousePosition;
 			playerAvatar.PlayerJump();
@@ -96,6 +103,15 @@ public class InterfaceController : MonoBehaviour {
     void onStarsPickupValueChange() {
 
         UIStarsScore.text = world.STARS_PICKED.ToString("N0");
+
+    }
+
+    void finishLevel() {
+
+        Debug.Log("FINISH LEVEL");
+
+        FinishLevelScreen.SetActive(true);
+        FinishLevelScreen.SendMessage("finishLevel", world);
 
     }
 }

@@ -19,7 +19,7 @@ public class Player : Character  {
 		this.tag = "PLAYER";
 		this.layer = this.layer = Layers.CHARACTERS;
 
-		this.depth = 5;
+		this.depth = 10;
 
 		//this.tint = Color.white;
 

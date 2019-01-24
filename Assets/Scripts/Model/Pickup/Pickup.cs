@@ -28,7 +28,7 @@ public class Pickup : Actor  {
         this.tag = "PICKUP";
         this.layer = this.layer = Layers.CHARACTERS;
 
-        this.depth = 5;
+        this.depth = 7;
 
         //this.tint = Color.white;
 
@@ -50,6 +50,8 @@ public class Pickup : Actor  {
 
         constrainMovement = false;
         constrainRotation = true;
+
+        
 
         
     }

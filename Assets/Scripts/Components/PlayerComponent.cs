@@ -53,27 +53,46 @@ public class PlayerComponent : CharacterComponent {
         if (transform.position.x > world.SCREEN_LEFT) {
 			PlayerActor.isInvincible = false;
 		}
-	}
+
+
+    }
 
 	// Update is called once per frame
 	protected override void FixedUpdate () {
 		base.FixedUpdate();
 
-		if (transform.position.x < PlayerActor.stableXPosition && PlayerActor.isTouchingFloor) {
+        float distance = PlayerActor.stableXPosition - transform.position.x;
+        float vel_x = PlayerActor.recomposeXSpeed * distance / PlayerActor.recomposeDistance;
 
-			float distance = PlayerActor.stableXPosition - transform.position.x;
-			float vel_x = PlayerActor.recomposeXSpeed * distance / PlayerActor.recomposeDistance;
+        if (!world.LevelCompleted) {
 
-			rb.velocity = new Vector2 (vel_x, rb.velocity.y) + dynamicVelocity;
+            if (transform.position.x < PlayerActor.stableXPosition && PlayerActor.isTouchingFloor) {
 
-		} else {
-			rb.velocity = new Vector2 (0, rb.velocity.y) + dynamicVelocity;
-		}
+                rb.velocity = new Vector2(vel_x, rb.velocity.y) + dynamicVelocity;
+
+            } else {
+                rb.velocity = new Vector2(0, rb.velocity.y) + dynamicVelocity;
+            }
+
+        } else{
+
+           
+
+            // RUN TO LEVEL FINISH
+            PlayerActor.stableXPosition = world.SCREEN_RIGHT * 1.5f;
+            PlayerActor.recomposeXSpeed *= 1.1f;
+
+            rb.velocity = new Vector2(vel_x, rb.velocity.y) + dynamicVelocity;
+
+            
+
+        }
+		
 			
 		if (!PlayerActor.isInvincible && 
 			(transform.position.x < world.SCREEN_DEATH_X || transform.position.y < world.SCREEN_DEATH_Y)) {
 
-			world.BASE_SPEED = Vector2.zero;
+			//world.BASE_SPEED = Vector2.zero;
 			rb.velocity = Vector2.zero;
 
             playerDeath();
@@ -83,10 +102,21 @@ public class PlayerComponent : CharacterComponent {
             GameObject.Destroy(gameObject);
 
         }
-			
-		dynamicVelocity = Vector2.MoveTowards (dynamicVelocity, Vector2.zero, PlayerActor.dynamicVelocityAdjust);
 
-	}
+        dynamicVelocity = Vector2.MoveTowards (dynamicVelocity, Vector2.zero, PlayerActor.dynamicVelocityAdjust);
+
+        // FINISHES LEVEL
+        if (world.LevelCompleted && transform.position.x > world.SCREEN_RIGHT * 1.2f) {
+
+            world.finishLevel();
+
+            GameObject.Destroy(gameObject);
+            return;
+        }
+
+
+
+    }
 
 	
 	public void PlayerJump(){
@@ -112,6 +142,12 @@ public class PlayerComponent : CharacterComponent {
 
 		// HIT ENEMY
 		if (collision.gameObject.tag == "ENEMY") {
+
+            if (PlayerActor.isInvincible) {
+                Physics2D.IgnoreCollision(collision.gameObject.GetComponent<Collider2D>(), this.GetComponent<Collider2D>());
+                return;
+
+            }
 
 			Vector2 contactNormal = getContactNormal (collision);
 

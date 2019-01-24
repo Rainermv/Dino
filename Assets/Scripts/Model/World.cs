@@ -7,6 +7,12 @@ public class World {
 
 	private static World instance;
 
+    private List<Level> levels = new List<Level>();
+
+    private Action OnlevelFinished;
+
+    private Level currentLevel = null;
+
 	public Vector2 GRAVITY = new Vector2 (0, -18);
 	
 	public Vector2 BASE_SPEED = new Vector2 (-3f, 0);
@@ -41,7 +47,7 @@ public class World {
 
     Action starsPickedValueChanged;
 
-    private int _STARS_PICKED = 0;
+    private int _STARS_PICKED = 10;
 
     public float PLATFORM_FREQUENCY = 8;
 
@@ -63,8 +69,10 @@ public class World {
 
     public float PROP_SPAWN_CHANCE_GROUND = 1f;
 
-    public float PICKUP_SPAWN_CHANCE_PLATFORMS = 0.3f;
-    public float PICKUP_SPAWN_CHANCE_GROUND = 0.1f;
+    public float PICKUP_SPAWN_CHANCE_PLATFORMS = 1f;
+    public float PICKUP_SPAWN_CHANCE_GROUND = 1f;
+
+    public int LEVEL_FINISH_DEFAULT_STRATEGY_DISTANCE = 20;
 
     public int STARS_PICKED {
         get {
@@ -80,7 +88,27 @@ public class World {
         }
     }
 
-    private World(){
+    public float DistanceTargetRatio {
+        get {
+            return TRAVEL_DISTANCE / currentLevel.DistanceTarget;
+        }
+    }
+
+    public bool IsDistanceTargetResetStrategy {
+        get {
+            return (currentLevel.DistanceTarget - (int)TRAVEL_DISTANCE) < LEVEL_FINISH_DEFAULT_STRATEGY_DISTANCE;
+        }
+    }
+
+    public bool LevelCompleted {
+        get {
+            return TRAVEL_DISTANCE > currentLevel.DistanceTarget;
+        }
+    }
+
+    
+
+    private World(int loadLevel){
 		
 		SCREEN_WIDTH = SCREEN_RIGHT - SCREEN_LEFT;
 		SCREEN_MIDPOINT = SCREEN_LEFT + SCREEN_WIDTH / 2;
@@ -91,26 +119,51 @@ public class World {
 		GENERATION_STRATEGY_LIST.Add (PlatformGenerationStrategy.Ground);
 		GENERATION_STRATEGY_LIST.Add (PlatformGenerationStrategy.Air);
 
+        // Generating levels
 
-	}
+        levels.Add(new Level(150, 0));
+        levels.Add(new Level(300, 1));
+        levels.Add(new Level(400, 2));
+
+        if (loadLevel >= levels.Count ) {
+            Debug.LogError("Level index out of range - " + loadLevel);
+        } else {
+            currentLevel = levels[loadLevel];
+        }
+
+        
+    }
 
 	public void randomStrategy(){
 
-		int id = UnityEngine.Random.Range (0, GENERATION_STRATEGY_LIST.Count);
+        //TEST
+        GENERATION_STRATEGY = GENERATION_STRATEGY_LIST[1];
+
+        int id = UnityEngine.Random.Range (0, GENERATION_STRATEGY_LIST.Count);
 		GENERATION_STRATEGY = GENERATION_STRATEGY_LIST [id];
 
 	}
 
+    public void resetStrategy() {
+
+        GENERATION_STRATEGY = GENERATION_STRATEGY_LIST[0];
+    }
+
 	public static World getInstance(){
 		if (instance == null){
-			instance = new World();
+			instance = new World(0);
 		}
 		return instance;
 	}
 
+    // Refactor this to make things faster
 	public static World restart(){
 
-		instance = new World ();
+        instance = null;
+
+        int levelNumber = instance.currentLevel.Number;
+        instance = new World (levelNumber);
+
 		return instance;
 
 	}
@@ -124,6 +177,18 @@ public class World {
     public void registerStarsPickedValueChange(Action callback) {
 
         starsPickedValueChanged += callback;
+    }
+
+    public void finishLevel() {
+
+        Debug.Log("finish level");
+
+        currentLevel.Active = false;
+        OnlevelFinished();
+    }
+
+    public void registerOnLevelFinished(Action act) {
+        OnlevelFinished += act;
     }
 	
 	
