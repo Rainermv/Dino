@@ -47,7 +47,7 @@ public class World {
 
     Action starsPickedValueChanged;
 
-    private int _STARS_PICKED = 10;
+    private int _STARS_PICKED = 0;
 
     public float PLATFORM_FREQUENCY = 8;
 
@@ -69,8 +69,8 @@ public class World {
 
     public float PROP_SPAWN_CHANCE_GROUND = 1f;
 
-    public float PICKUP_SPAWN_CHANCE_PLATFORMS = 1f;
-    public float PICKUP_SPAWN_CHANCE_GROUND = 1f;
+    public float PICKUP_SPAWN_CHANCE_PLATFORMS = 0.5f;
+    public float PICKUP_SPAWN_CHANCE_GROUND = 0.2f;
 
     public int LEVEL_FINISH_DEFAULT_STRATEGY_DISTANCE = 20;
 
@@ -121,9 +121,9 @@ public class World {
 
         // Generating levels
 
-        levels.Add(new Level(150, 0));
-        levels.Add(new Level(300, 1));
-        levels.Add(new Level(400, 2));
+        levels.Add(new Level(50,  levels.Count));
+        levels.Add(new Level(150, levels.Count));
+        levels.Add(new Level(300, levels.Count));
 
         if (loadLevel >= levels.Count ) {
             Debug.LogError("Level index out of range - " + loadLevel);
@@ -134,7 +134,7 @@ public class World {
         
     }
 
-	public void randomStrategy(){
+	public void RandomStrategy(){
 
         //TEST
         GENERATION_STRATEGY = GENERATION_STRATEGY_LIST[1];
@@ -144,12 +144,12 @@ public class World {
 
 	}
 
-    public void resetStrategy() {
+    public void ResetStrategy() {
 
         GENERATION_STRATEGY = GENERATION_STRATEGY_LIST[0];
     }
 
-	public static World getInstance(){
+	public static World GetInstance(){
 		if (instance == null){
 			instance = new World(0);
 		}
@@ -157,11 +157,17 @@ public class World {
 	}
 
     // Refactor this to make things faster
-	public static World restart(){
+	public static World Restart(bool nextLevel){
 
-        instance = null;
+        
 
         int levelNumber = instance.currentLevel.Number;
+
+        if (nextLevel) {
+            levelNumber += 1;
+        }
+
+        instance = null;
         instance = new World (levelNumber);
 
 		return instance;
@@ -179,9 +185,13 @@ public class World {
         starsPickedValueChanged += callback;
     }
 
-    public void finishLevel() {
+    public void StopMoving() {
 
-        Debug.Log("finish level");
+        BASE_SPEED = Vector2.zero;
+
+    }
+
+    public void finishLevel() {
 
         currentLevel.Active = false;
         OnlevelFinished();

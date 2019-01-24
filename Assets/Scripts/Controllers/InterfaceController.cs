@@ -10,8 +10,10 @@ public class InterfaceController : MonoBehaviour {
     private World world;
 
     public GameObject UIJumps;
-    public GameObject UIDistance;
-    public GameObject UIStars;
+    //public GameObject UIDistance;
+    //public GameObject UIStars;
+
+    public GameObject[] UIdisableOnEnd;
 
     public Text UIStarsScore;
     public Text UIDistanceScore;
@@ -35,7 +37,7 @@ public class InterfaceController : MonoBehaviour {
 	
 	void Awake(){
 
-        world = World.getInstance();
+        world = World.GetInstance();
 		
 	}
 
@@ -49,9 +51,13 @@ public class InterfaceController : MonoBehaviour {
 
         playerAvatar.playerDeath = delegate () {
 
-            UIJumps.SetActive(false);
-            UIStars.SetActive(false);
-            UIDistance.SetActive(false);
+            foreach (GameObject UIElement in UIdisableOnEnd) {
+
+                UIElement.SetActive(false);
+
+            }
+
+            
 
             GameOverScreen.SetActive(true);
 
@@ -107,8 +113,6 @@ public class InterfaceController : MonoBehaviour {
     }
 
     void finishLevel() {
-
-        Debug.Log("FINISH LEVEL");
 
         FinishLevelScreen.SetActive(true);
         FinishLevelScreen.SendMessage("finishLevel", world);

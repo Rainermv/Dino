@@ -21,13 +21,13 @@ public class UIController : MonoBehaviour {
         SceneManager.LoadScene(1);
     }
 
-    public void RestartGame() {
+    public void RestartGame(bool nextLevel) {
 
         //print ("click");
 
         SceneManager.LoadScene(1);
         //Application.LoadLevel(Application.loadedLevel);
-        World.restart();
+        World.Restart(nextLevel);
     }
 
 

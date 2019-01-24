@@ -84,22 +84,7 @@ public class PlayerComponent : CharacterComponent {
 
             rb.velocity = new Vector2(vel_x, rb.velocity.y) + dynamicVelocity;
 
-            
-
-        }
-		
-			
-		if (!PlayerActor.isInvincible && 
-			(transform.position.x < world.SCREEN_DEATH_X || transform.position.y < world.SCREEN_DEATH_Y)) {
-
-			//world.BASE_SPEED = Vector2.zero;
-			rb.velocity = Vector2.zero;
-
-            playerDeath();
-
-            playerDiedCallback();
-
-            GameObject.Destroy(gameObject);
+            PlayerActor.isInvincible = true;
 
         }
 
@@ -111,9 +96,22 @@ public class PlayerComponent : CharacterComponent {
             world.finishLevel();
 
             GameObject.Destroy(gameObject);
-            return;
         }
 
+        if (!PlayerActor.isInvincible &&
+            (transform.position.x < world.SCREEN_DEATH_X || transform.position.y < world.SCREEN_DEATH_Y)) {
+
+            //world.BASE_SPEED = Vector2.zero;
+            //rb.velocity = Vector2.zero;
+
+            playerDeath();
+            playerDiedCallback();
+
+            world.StopMoving();
+
+            GameObject.Destroy(gameObject);
+
+        }
 
 
     }

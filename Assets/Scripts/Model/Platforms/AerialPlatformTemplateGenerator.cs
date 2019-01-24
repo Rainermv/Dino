@@ -73,7 +73,7 @@ public class AerialPlatformTemplateGenerator  {
 
 		int index = 0;
 
-		switch (World.getInstance().GENERATION_STRATEGY) {
+		switch (World.GetInstance().GENERATION_STRATEGY) {
 
 		case PlatformGenerationStrategy.Air:
 			index = Random.Range (3, 7);

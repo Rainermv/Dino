@@ -10,7 +10,7 @@ public abstract class Actor {
     public delegate void OnChangeSpriteKey();
     public OnChangeSpriteKey onChangeSpriteKey;
 
-	protected World world = World.getInstance();
+	protected World world = World.GetInstance();
 
 	public int id = 0;
 	public Vector2 startingPosition = Vector2.zero;

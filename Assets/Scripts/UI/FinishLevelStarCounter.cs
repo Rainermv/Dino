@@ -34,7 +34,7 @@ public class FinishLevelStarCounter : MonoBehaviour
 
         print("update star count routine");
 
-        World world = World.getInstance();
+        World world = World.GetInstance();
 
         while (stars < world.STARS_PICKED) {
 

@@ -5,6 +5,6 @@ public class StarPickupEffect : PickupEffect
 {
     public override void OnPickup(Player player)
     {
-        World.getInstance().STARS_PICKED += 1;
+        World.GetInstance().STARS_PICKED += 1;
     }
 }

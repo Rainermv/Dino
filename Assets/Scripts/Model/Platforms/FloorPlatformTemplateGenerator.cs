@@ -20,7 +20,7 @@ public class FloorPlatformTemplateGenerator  {
 	private FloorPlatformTemplateGenerator(){
 
 
-		Generate (World.getInstance().FLOOR_PLATFORM_SIZE);
+		Generate (World.GetInstance().FLOOR_PLATFORM_SIZE);
 	}
 	public static FloorPlatformTemplateGenerator getInstance(){
 		if (instance == null){

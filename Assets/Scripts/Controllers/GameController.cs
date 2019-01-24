@@ -25,7 +25,7 @@ public class GameController : MonoBehaviour {
 	void Awake(){
 	
 		objFactory = ActorFactory.getInstance();
-		world = World.getInstance();
+		world = World.GetInstance();
 
 		playerController = GetComponent<InterfaceController> ();
 	
@@ -97,7 +97,7 @@ public class GameController : MonoBehaviour {
 
             if (world.IsDistanceTargetResetStrategy) {
 
-                world.resetStrategy();
+                world.ResetStrategy();
                 yield break;
 
             }
@@ -106,7 +106,7 @@ public class GameController : MonoBehaviour {
 				Random.Range(0f,1f) < world.STRATEGY_CHANGE_CHANCE) {
 
 				if (manageStrategies){
-					world.randomStrategy ();
+					world.RandomStrategy ();
 				}
 					
 				ticks++;

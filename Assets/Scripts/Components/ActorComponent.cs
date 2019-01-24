@@ -42,7 +42,7 @@ public class ActorComponent : MonoBehaviour {
 
         rend = GetComponentsInChildren<SpriteRenderer>()[0];
 
-        world = World.getInstance();
+        world = World.GetInstance();
 	}
 
 	
