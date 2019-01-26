@@ -20,7 +20,7 @@ public class Bumper : Character {
         this.name = "Bumper";
         //this.spriteKey = "Bumper/base" + Random.Range(0, BASES);
 
-        this.spriteKey = null;
+        this.spriteKey = "Bumper/Base0";
         addCharacterState(CharacterAnimationType.RUN, "default", Vector2.zero);
         addCharacterState(CharacterAnimationType.JUMP, "default", Vector2.zero);
         addCharacterState(CharacterAnimationType.IDLE, "default", Vector2.zero);
@@ -42,7 +42,7 @@ public class Bumper : Character {
 
 
         float width = 0.9f;
-        float height = 0.8f;
+        float height = 0.9f;
 
         float offsetX = 0f;
         float offsetY = 0f;

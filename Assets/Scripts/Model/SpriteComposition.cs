@@ -10,6 +10,8 @@ public class SpriteComposition : Actor {
 
     public SpriteComposition(string defaultSpriteKey, int depth) {
 
+        Debug.Log(defaultSpriteKey);
+
         this.addState(CharacterAnimationType.IDLE, defaultSpriteKey);
         //_currentSpriteKey = defaultSpriteKey;
         spriteKey = defaultSpriteKey;

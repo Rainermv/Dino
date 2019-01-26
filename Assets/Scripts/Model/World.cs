@@ -47,7 +47,7 @@ public class World {
 
     Action starsPickedValueChanged;
 
-    private int _STARS_PICKED = 0;
+    private int _STARS_PICKED = 10;
 
     public float PLATFORM_FREQUENCY = 8;
 
@@ -64,8 +64,8 @@ public class World {
 	public float STRATEGY_CHANGE_FREQUENCY = 25f;
 	public float STRATEGY_CHANGE_CHANCE = 0.5f;
 
-	public float ENEMY_SPAWN_CHANCE_PLATFORMS = 0.3f;
-    public float ENEMY_SPAWN_CHANCE_GROUND = 0.3f;
+	public float ENEMY_SPAWN_CHANCE_PLATFORMS = 1f;
+    public float ENEMY_SPAWN_CHANCE_GROUND = 1f;
 
     public float PROP_SPAWN_CHANCE_GROUND = 1f;
 
@@ -103,6 +103,12 @@ public class World {
     public bool LevelCompleted {
         get {
             return TRAVEL_DISTANCE > currentLevel.DistanceTarget;
+        }
+    }
+
+    public bool LevelFinished {
+        get {
+            return currentLevel.Active == false;
         }
     }
 
@@ -194,7 +200,11 @@ public class World {
     public void finishLevel() {
 
         currentLevel.Active = false;
-        OnlevelFinished();
+
+        if (OnlevelFinished != null) {
+            OnlevelFinished();
+        }
+       
     }
 
     public void registerOnLevelFinished(Action act) {

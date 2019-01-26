@@ -4,9 +4,9 @@ using System.Collections;
 public class Player : Character  {
 	
 	public int maxJumps;
-	public int jumps;
+    private int jumps;
 
-	public float stableXPosition;
+    public float stableXPosition;
 	public float recomposeXSpeed;
 	public float recomposeDistance;
 
@@ -14,7 +14,17 @@ public class Player : Character  {
 
 	public bool isInvincible = true;
 
-	public Player(){
+    public int Jumps {
+        get {
+            return jumps;
+        }
+
+        set {
+            jumps = Mathf.Clamp(value, 0, maxJumps);
+        }
+    }
+
+    public Player(){
 
 		this.tag = "PLAYER";
 		this.layer = this.layer = Layers.CHARACTERS;
@@ -66,7 +76,7 @@ public class Player : Character  {
 		constrainRotation = true;
 
 		jumpForce = new Vector2(0,550);
-		maxJumps = jumps = 3;
+		maxJumps = Jumps = 3;
 			
 	}
 }

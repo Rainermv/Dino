@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class FinishLevelStarCounter : MonoBehaviour
+public class FinishLevelStarCounter : UIComponent
 {
 
     int stars = 0;

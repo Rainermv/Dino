@@ -119,16 +119,16 @@ public class PlayerComponent : CharacterComponent {
 	
 	public void PlayerJump(){
 		
-		if (PlayerActor.jumps > 0){
+		if (PlayerActor.Jumps > 0){
 
 			//rb.drag = 0;
 
 			rb.velocity = new Vector2(rb.velocity.x, 0);
 			rb.AddForce(PlayerActor.jumpForce);
 			
-			PlayerActor.jumps--;
+			PlayerActor.Jumps--;
 
-            jumpChange(PlayerActor.jumps);
+            jumpChange(PlayerActor.Jumps);
 
         }
 
@@ -152,11 +152,11 @@ public class PlayerComponent : CharacterComponent {
 			if (contactNormal.y >= 0.5) {
 
                 ActionJump (1.5f);
-				PlayerActor.jumps += 1;
+				PlayerActor.Jumps += 1;
 
-                jumpChange(PlayerActor.jumps);
+                jumpChange(PlayerActor.Jumps);
 
-                collision.gameObject.SendMessage ("Kill");
+                //collision.gameObject.SendMessage ("Kill");
 
 			} 
 
@@ -171,9 +171,9 @@ public class PlayerComponent : CharacterComponent {
 					
 			// Get a jump if the player jump on the top of a floor
 			if (getContactNormal(collision).y >= 0.75){
-				PlayerActor.jumps = PlayerActor.maxJumps;
+				PlayerActor.Jumps = PlayerActor.maxJumps;
 
-                jumpChange(PlayerActor.jumps);
+                jumpChange(PlayerActor.Jumps);
                 //rb.drag = 1000;
             }
 		
@@ -181,11 +181,7 @@ public class PlayerComponent : CharacterComponent {
 			
 	}
 
-	Vector3 getContactNormal(Collision2D collision){
-
-		return collision.contacts [0].normal;
-
-	}
+	
 
 	protected override void OnCollisionExit2D(Collision2D collision){
 		base.OnCollisionEnter2D(collision);

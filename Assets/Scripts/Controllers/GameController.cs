@@ -4,12 +4,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 
-[RequireComponent (typeof (InterfaceController))]
+[RequireComponent (typeof (PlayerController))]
 public class GameController : MonoBehaviour {
 	
 	private ActorFactory objFactory;
 	private World world;
-	private InterfaceController playerController;
+	private PlayerController playerController;
 
 	private ActorComponent[] backgroundArray;
 
@@ -27,7 +27,7 @@ public class GameController : MonoBehaviour {
 		objFactory = ActorFactory.getInstance();
 		world = World.GetInstance();
 
-		playerController = GetComponent<InterfaceController> ();
+		playerController = GetComponent<PlayerController> ();
 	
 	}
 		

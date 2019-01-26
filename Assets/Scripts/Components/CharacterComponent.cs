@@ -206,10 +206,16 @@ public class CharacterComponent : ActorComponent {
 
 	}
 
-    
+    protected Vector3 getContactNormal(Collision2D collision) {
+
+        return collision.contacts[0].normal;
+
+    }
 
 
-	/*
+
+
+    /*
 	protected override void OnCollisionEnter2D(Collision2D collision){
 		base.OnCollisionEnter2D(collision);
 
