@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Assets.Scripts.Model;
 
 public class EnemyComponent : CharacterComponent {
 
@@ -20,9 +21,9 @@ public class EnemyComponent : CharacterComponent {
 	protected override void Start () {
 		base.Start ();
 
-		enemy = actor as Character;
+		enemy = Actor as Character;
 
-		SetState (CharacterAnimationType.RUN);
+		SetState (CharacterAnimationType.Running);
 
 		enemyAI.StartAI ( this );
 	}
@@ -37,25 +38,25 @@ public class EnemyComponent : CharacterComponent {
 	}
 
 	public void setAlive(bool value){
-		enemy.isAlive = value;
+		enemy.IsAlive = value;
 	}
 
 	protected override void FixedUpdate () {
 		base.FixedUpdate();
 
 
-		if (currentCharacterState.animationType == CharacterAnimationType.IDLE ||
-			currentCharacterState.animationType == CharacterAnimationType.DEAD) {
+		if (currentCharacterState.animationType == CharacterAnimationType.Idling ||
+			currentCharacterState.animationType == CharacterAnimationType.Dead) {
 			
 			dynamicVelocity = new Vector2 (0f, 0f);
 
-		} else if (currentCharacterState.animationType == CharacterAnimationType.RUN) {
+		} else if (currentCharacterState.animationType == CharacterAnimationType.Running) {
 			
 			dynamicVelocity = new Vector2 (-1f, 0f);
 
 		}
 
-		rb.velocity = new Vector2 (world.BASE_SPEED.x, rb.velocity.y) + dynamicVelocity;
+		RigidBody.velocity = new Vector2 (World.BaseSpeed.x, RigidBody.velocity.y) + dynamicVelocity;
 	}
 
     protected override void OnCollisionEnter2D(Collision2D collision) {

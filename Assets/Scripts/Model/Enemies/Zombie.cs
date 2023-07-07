@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Assets.Scripts.Model;
 
 public class Zombie : Character  {
 
@@ -13,37 +14,37 @@ public class Zombie : Character  {
 		this.tag = "ENEMY";
 		this.layer = this.layer = Layers.CHARACTERS;
 
-		collisionPullbackVelocity = -20f;
+		CollisionPullbackVelocity = -20f;
 
-		this.depth = 5;
+		this.sortingOrder = 5;
 
 		//this.tint = Color.white;
 
 		this.name = "ZombieMale";
 		this.spriteKey = null;
 
-		addCharacterState( CharacterAnimationType.RUN, "zombie_walk", Vector2.zero);
-		addCharacterState( CharacterAnimationType.JUMP, "zombie_idle", Vector2.zero);
-		addCharacterState( CharacterAnimationType.IDLE, "zombie_idle", Vector2.zero);
-		addCharacterState( CharacterAnimationType.DEAD, "zombie_dead", new Vector2(0.515f, -0.165f));
+		AddCharacterState( CharacterAnimationType.Running, "zombie_walk", Vector2.zero);
+		AddCharacterState( CharacterAnimationType.Jumping, "zombie_idle", Vector2.zero);
+		AddCharacterState( CharacterAnimationType.Idling, "zombie_idle", Vector2.zero);
+		AddCharacterState( CharacterAnimationType.Dead, "zombie_dead", new Vector2(0.515f, -0.165f));
 
 
 		//this.animationKeys.Add(CharacterAnimationType.RUN, "zombie_walk");
 		//this.animationKeys.Add(CharacterAnimationType.JUMP, "zombie_idle");
 		//this.animationKeys.Add(CharacterAnimationType.IDLE, "zombie_idle");
 		//this.animationKeys.Add(CharacterAnimationType.DEAD, "zombie_dead");
-		this.initialStateType = CharacterAnimationType.IDLE;
+		this.initialStateType = CharacterAnimationType.Idling;
 
 		float width = 0.8f;
 		float height = 1.3f;
 
 		//float offset_x = -0.3f;
 
-		setCollider (new Vector2 (width, height), new Vector2 (0f, -0.17f), "Enemy");
+		SetCollider (new Vector2 (width, height), new Vector2 (0f, -0.17f), "Enemy");
 
 		this.startingPosition = new Vector2( 
-			world.SCREEN_LEFT -2,
-			world.FLOOR_Y + height
+			world.ScreenModel.ScreenLeft -2,
+			world.ScreenModel.FloorY + height
 		);
 			
 		this.isKinematic = false;
@@ -54,7 +55,7 @@ public class Zombie : Character  {
 		constrainMovement = false;
 		constrainRotation = true;
 
-		jumpForce = new Vector2(0,0);
+		JumpForce = new Vector2(0,0);
 	}
 }
 

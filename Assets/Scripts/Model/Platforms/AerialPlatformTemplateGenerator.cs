@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-
+using Assets.Scripts.Model;
 
 
 public class AerialPlatformTemplateGenerator  {
@@ -69,18 +69,18 @@ public class AerialPlatformTemplateGenerator  {
 	}
 		
 
-	public TileType[,] GetRandom(){
+	public TileType[,] GetRandom(PlatformGenerationStrategy generationStrategy){
 
 		int index = 0;
 
-		switch (World.GetInstance().GENERATION_STRATEGY) {
+		switch (generationStrategy) {
 
-		case PlatformGenerationStrategy.Air:
+		case PlatformGenerationStrategy.AirOnly:
 			index = Random.Range (3, 7);
 			break;
 		
 
-		case PlatformGenerationStrategy.Ground:
+		case PlatformGenerationStrategy.GroundOnly:
 			index = Random.Range (0, 3);
 			break;
 

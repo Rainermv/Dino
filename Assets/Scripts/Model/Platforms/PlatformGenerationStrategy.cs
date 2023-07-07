@@ -2,8 +2,9 @@
 
 public enum PlatformGenerationStrategy
 {
-	Ground,
-	Air
+	GroundOnly,
+	AirOnly,
+    Nothing
 }
 
 

@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System;
+using Assets.Scripts.Model;
 
 public class Pickup : Actor  {
 
@@ -28,7 +29,7 @@ public class Pickup : Actor  {
         this.tag = "PICKUP";
         this.layer = this.layer = Layers.CHARACTERS;
 
-        this.depth = 7;
+        this.sortingOrder = 7;
 
         //this.tint = Color.white;
 

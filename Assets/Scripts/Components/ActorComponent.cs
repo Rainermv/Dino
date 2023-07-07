@@ -1,27 +1,28 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using Assets.Scripts.Model;
 
 public class ActorComponent : MonoBehaviour {
 	
-	protected Rigidbody2D rb;
-	protected Collider2D[] colls;
+	protected Rigidbody2D RigidBody;
+	protected Collider2D[] Colliders;
 
-	protected World world;
-	public Actor actor;
+	protected World World;
+	public Actor Actor;
 
-    SpriteRenderer rend;
+    SpriteRenderer _spriteRenderer;
 
     //List<GameObject> childrendObjects = new List<GameObject>();
 
 
-    public Vector2 getSpriteSize(){
+    public Vector2 GetSpriteSize(){
 
 		Vector2 size = Vector2.zero;
 
-		if (this.rend != null) {
+		if (this._spriteRenderer != null) {
 
-			Bounds b = rend.bounds;
+			Bounds b = _spriteRenderer.bounds;
 
 			//size = new Vector2 (b.max.x - b.min.x, b.
 
@@ -37,12 +38,12 @@ public class ActorComponent : MonoBehaviour {
 				
 	protected virtual void Awake(){
 		
-		rb = GetComponent<Rigidbody2D>();
-		colls =  GetComponents<Collider2D>();
+		RigidBody = GetComponent<Rigidbody2D>();
+		Colliders =  GetComponents<Collider2D>();
 
-        rend = GetComponentsInChildren<SpriteRenderer>()[0];
+        _spriteRenderer = GetComponentsInChildren<SpriteRenderer>()[0];
 
-        world = World.GetInstance();
+        World = World.GetInstance();
 	}
 
 	
@@ -54,7 +55,7 @@ public class ActorComponent : MonoBehaviour {
 	// Update is called once per frame
 	protected virtual void Update () {
 
-		if (transform.position.x < world.X_REMOVE && !actor.indestructable) {
+		if (transform.position.x < World.XRemove && !Actor.indestructable) {
 
 			Destroy (gameObject);
 
@@ -62,31 +63,28 @@ public class ActorComponent : MonoBehaviour {
 
 	}
 	
-	protected virtual void FixedUpdate () {
+	protected virtual void FixedUpdate ()
+    {
+        if (!Actor.isKinematic)
+            return;
 
-		if (actor.isKinematic){
+        if (Actor.hasRigidbody) {
+            //moveVector = actor.velocity;
 
-			if (actor.hasRigidbody) {
-				//moveVector = actor.velocity;
+            RigidBody.MovePosition (RigidBody.position + (World.BaseSpeed * Actor.worldMovementMultiplier) * Time.fixedDeltaTime);
+            //moveVector += world.BASE_SPEED;
+            return;
+        }
 
-				rb.MovePosition (rb.position + (world.BASE_SPEED * actor.worldMovementMultiplier) * Time.fixedDeltaTime);
-				//moveVector += world.BASE_SPEED;
-			} else {
-				Vector2 pos2d = transform.position;
-				transform.position = pos2d + (world.BASE_SPEED * actor.worldMovementMultiplier) * Time.fixedDeltaTime;
+        Vector2 pos2d = transform.position;
+        transform.position = pos2d + (World.BaseSpeed * Actor.worldMovementMultiplier) * Time.fixedDeltaTime;
 
-				//transform.position = transform.position + (world.BASE_SPEED * actor.worldMovementMultiplier) * Time.fixedDeltaTime;
-
-			}
+        //transform.position = transform.position + (world.BASE_SPEED * actor.worldMovementMultiplier) * Time.fixedDeltaTime;
 
 
 
-		}
-
-			
-
-		//this.rb.velocity = velocityVector;
-	}
+        //this.rb.velocity = velocityVector;
+    }
 
 	/*
 	public void setSpeed( Vector2 moveVector){
@@ -128,7 +126,7 @@ public class ActorComponent : MonoBehaviour {
 
 		Bounds bounds = new Bounds();
 
-		foreach (Collider2D coll in colls) {
+		foreach (Collider2D coll in Colliders) {
 
 			bounds.Encapsulate (coll.bounds);
 
@@ -140,12 +138,12 @@ public class ActorComponent : MonoBehaviour {
 
     public Bounds getRendererBounds() {
 
-        return rend.bounds;
+        return _spriteRenderer.bounds;
 
     }
 
 	public Collider2D[] getColliders(){
-		return colls;
+		return Colliders;
 	}
 
 

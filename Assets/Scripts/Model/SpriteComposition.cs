@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Assets.Scripts.Model;
 using UnityEngine;
 using UnityEditor;
 
@@ -8,15 +9,15 @@ public class SpriteComposition : Actor {
 
     private Dictionary<CharacterAnimationType, string> spriteKeyStates = new Dictionary<CharacterAnimationType, string>();
 
-    public SpriteComposition(string defaultSpriteKey, int depth) {
+    public SpriteComposition(string defaultSpriteKey, int sortingOrder) {
 
         Debug.Log(defaultSpriteKey);
 
-        this.addState(CharacterAnimationType.IDLE, defaultSpriteKey);
+        this.addState(CharacterAnimationType.Idling, defaultSpriteKey);
         //_currentSpriteKey = defaultSpriteKey;
         spriteKey = defaultSpriteKey;
 
-        this.depth = depth;
+        this.sortingOrder = sortingOrder;
     }
 
     /*

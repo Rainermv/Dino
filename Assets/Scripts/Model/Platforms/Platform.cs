@@ -24,18 +24,18 @@ public class Platform : Actor {
 	}
 
 	public void setRandomPosition(){
-		this.startingPosition = new Vector2( world.X_SPAWN, Random.Range(world.FLOOR_Y, world.CELLING_Y));
+		this.startingPosition = new Vector2( world.XSpawn, Random.Range(world.ScreenModel.FloorY, world.ScreenModel.CellingY));
 	}
 
 	public void setToFloor(float xPosition){
-		this.startingPosition = new Vector2(xPosition, world.FLOOR_Y );
+		this.startingPosition = new Vector2(xPosition, world.ScreenModel.FloorY );
 	}
 
 	public static Platform FloorPlatform(FloorPlatformType type, float xPosition){
 
 		Platform floorPlatform = new Platform ();
 		floorPlatform.name = "GroundPlatform";
-		floorPlatform.depth = 7;
+		floorPlatform.sortingOrder = 7;
 
 		TileType[,] template = FloorPlatformTemplateGenerator.getInstance().Get(type);
 
@@ -49,13 +49,13 @@ public class Platform : Actor {
 
 	}
 
-	public static Platform AerialPlatform(){
+	public static Platform AerialPlatform(PlatformGenerationStrategy platformGenerationStrategy){
 
 		Platform aerialPlatform = new Platform ();
 		aerialPlatform.name = "AirPlatform";
-		aerialPlatform.depth = 3;
+		aerialPlatform.sortingOrder = 3;
 
-		TileType[,] template = AerialPlatformTemplateGenerator.getInstance().GetRandom ();
+		TileType[,] template = AerialPlatformTemplateGenerator.getInstance().GetRandom (platformGenerationStrategy);
 
 		aerialPlatform.setWithTemplate (template);
         aerialPlatform.addBoxCollider ();

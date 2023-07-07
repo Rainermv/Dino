@@ -1,87 +1,77 @@
-﻿using UnityEngine;
-using UnityEngine.EventSystems;
-using System.Collections;
-using System.Collections.Generic;
-
+﻿using Assets.Scripts.Model;
+using UnityEngine;
 using UnityEngine.SceneManagement;
-using System;
 
-public class UIController : MonoBehaviour {
+namespace Assets.Scripts.UI
+{
+    public class UIController : MonoBehaviour {
 
-    private UIState currentUIState;
+        private UIState currentUIState;
 
-    private UIComponentCounterJump[]     uiComponentCounterJumpArray;
-    private UIComponentCounterStar[]     uiComponentCounterStarArray;
-    private UIComponentCounterDistance[] uiComponentCounterDistanceArray;
+        public UiComponentCounter JumperCounter;
+        public UiComponentCounter SlamCounter;
+        public UIComponentCounterStar StarCounter;
+        public UIComponentCounterDistance DistanceCounter;
 
-    World world;
-
-    public UIState CurrentUIState {
-        get {
-            return currentUIState;
-        }
-    }
-
-
-    // Use this for initialization
-    void Start () {
-
-        ChangeUIState(UIState.Game);
-
-        world = World.GetInstance();
-
-        uiComponentCounterJumpArray     = GetComponentsInChildren<UIComponentCounterJump>();
-        uiComponentCounterStarArray     = GetComponentsInChildren<UIComponentCounterStar>();
-        uiComponentCounterDistanceArray = GetComponentsInChildren<UIComponentCounterDistance>();
-
-        world.registerStarsPickedValueChange(UpdateStars);
-
-        //world.registerOnLevelFinished(finishLevel);
-
-
-        //audioListener = Camera.current.GetComponent<AudioListener>();
-
-    }
-
-    // Update is called once per frame
-    void Update() {
-
-
-        foreach (UIComponentCounterDistance uiComponentCounterDistance in uiComponentCounterDistanceArray) {
-            uiComponentCounterDistance.SetValue(world.DistanceTargetRatio, 0, currentUIState);
-        }
-
-        if (world.LevelFinished) {
-            ChangeUIState(UIState.FinishedLevel);
-        }
+        private World _world;
         
-        // UIDistanceTargetSlider.value = world.DistanceTargetRatio;
+        public UIState CurrentUIState => currentUIState;
 
-    }
 
-    #region BUTTONS
+        // Use this for initialization
+        public void Initialize(World world)
+        {
 
-    public void PlayGame() {
-        SceneManager.LoadScene(1);
-    }
+            _world = world;
+            _world.OnWorldFinishedAction += () => ChangeUIState(UIState.FinishedLevel);
 
-    public void LoadLevel(bool nextLevel) {
 
-        //print ("click");
+            ChangeUIState(UIState.Game);
+       
+            _world.RegisterStarsPickedValueChange(UpdateStars);
 
-        SceneManager.LoadScene(1);
-        //Application.LoadLevel(Application.loadedLevel);
-        World.Restart(nextLevel);
-    }
+            //world.registerOnLevelFinished(finishLevel);
 
-    public void ToggleSound(bool value) {
+            //audioListener = Camera.current.GetComponent<AudioListener>();
 
-        print(value);
+            JumperCounter.Initialize();
+            SlamCounter.Initialize();
 
-        PlayerPrefs.SetFloat("volMaster", value ? 1 : 0);
+        }
 
-    }
-    /*
+        // Update is called once per frame
+        void Update() {
+
+
+            DistanceCounter.SetValue(_world.DistanceTargetRatio, 0, currentUIState);
+
+            // UIDistanceTargetSlider.value = world.DistanceTargetRatio;
+
+        }
+
+        #region BUTTONS
+
+        public void PlayGame() {
+            SceneManager.LoadScene(1);
+        }
+
+        public void LoadLevel(bool nextLevel) {
+
+            //print ("click");
+
+            SceneManager.LoadScene(1);
+            //Application.LoadLevel(Application.loadedLevel);
+            World.Restart(nextLevel);
+        }
+
+        public void ToggleSound(bool value) {
+
+            print(value);
+
+            PlayerPrefs.SetFloat("volMaster", value ? 1 : 0);
+
+        }
+        /*
     public void finishLevel() {
 
         //FinishLevelScreen.SetActive(true);
@@ -89,33 +79,30 @@ public class UIController : MonoBehaviour {
 
     }*/
 
-    #endregion BUTTONS
+        #endregion BUTTONS
 
-    #region UI ELEMENTS
+        #region UI ELEMENTS
 
-    public void UpdateJumps(int value) {
+        public void UpdateJumps(int value, int maxValue) {
 
-        foreach (UIComponentCounterJump uiComponentCounterJump in uiComponentCounterJumpArray) {
-            uiComponentCounterJump.SetValue(value, currentUIState);
+            JumperCounter.SetValue(value, maxValue, currentUIState);
+
         }
 
-    }
+        void UpdateStars() {
 
-    void UpdateStars() {
+            int value = _world.StarsPicked;
 
-        int value = world.STARS_PICKED;
+            StarCounter.SetValue(value, 0, currentUIState);
+            
 
-        foreach (UIComponentCounterStar uiComponentCounterStar in uiComponentCounterStarArray) {
-            uiComponentCounterStar.SetValue(value, 0, currentUIState);
         }
 
-    }
+        public void OnPlayerDeath() {
 
-    public void OnPlayerDeath() {
+            ChangeUIState(UIState.Dead);
 
-        ChangeUIState(UIState.Dead);
-
-        /*
+            /*
         foreach (GameObject UIElement in UIdisableOnEnd) {
 
             UIElement.SetActive(false);
@@ -127,20 +114,21 @@ public class UIController : MonoBehaviour {
 
         }
         */
-    }
-
-    private void ChangeUIState(UIState newState) {
-
-        this.currentUIState = newState;
-
-        foreach (UIComponent uiComponent in Resources.FindObjectsOfTypeAll<UIComponent>()) {
-
-            uiComponent.SetActiveByState(newState);
         }
+
+        private void ChangeUIState(UIState newState) {
+
+            this.currentUIState = newState;
+
+            foreach (UIComponent uiComponent in FindObjectsOfType<UIComponent>()) {
+
+                uiComponent.SetActiveByState(newState);
+            }
+        }
+
+        #endregion UI ELEMENTS
+
+
+
     }
-
-    #endregion UI ELEMENTS
-
-
-
 }

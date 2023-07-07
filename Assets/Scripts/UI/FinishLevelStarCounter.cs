@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Assets.Scripts.Model;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -36,13 +37,13 @@ public class FinishLevelStarCounter : UIComponent
 
         World world = World.GetInstance();
 
-        while (stars < world.STARS_PICKED) {
+        while (stars < world.StarsPicked) {
 
             stars++;
 
             starsText.text = stars.ToString();
 
-            yield return new WaitForSeconds(COUNT_TIME / world.STARS_PICKED);
+            yield return new WaitForSeconds(COUNT_TIME / world.StarsPicked);
 
         }
 

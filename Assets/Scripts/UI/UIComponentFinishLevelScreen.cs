@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using Assets.Scripts.Model;
 
 public class UIComponentFinishLevelScreen : UIComponent {
 
@@ -46,7 +47,7 @@ public class UIComponentFinishLevelScreen : UIComponent {
             yield return null;
         }
 
-        GetComponentInChildren<UIComponentCounterStar>().SetValue(World.GetInstance().STARS_PICKED, StarUpdateTime, ActiveUIState);
+        GetComponentInChildren<UIComponentCounterStar>().SetValue(World.GetInstance().StarsPicked, StarUpdateTime, ActiveUIState);
 
         yield return null;
 

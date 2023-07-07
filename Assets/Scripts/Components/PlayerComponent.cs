@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System;
 using System.Collections;
+using Assets.Scripts.Model;
 using UnityEngine.Playables;
 using UnityEngine.Animations;
 
@@ -10,50 +11,83 @@ public class PlayerComponent : CharacterComponent {
 
 	private ActorComponent floorTouched;
 
-    public delegate void JumpChange(int jumps);
-    public JumpChange jumpChange;
+    private Action<int, int> _onUpdateJumpsAction;
 
-    public delegate void PlayerDeath();
-    public PlayerDeath playerDeath;
+    //public delegate void PlayerDeath();
+   //public PlayerDeath playerDeath;
 
-    Action playerDiedCallback;
+    Action _onPlayerDeathAction;
 
     protected override void Awake(){
 		base.Awake();	
 
-		rb = GetComponent<Rigidbody2D>();
+		RigidBody = GetComponent<Rigidbody2D>();
 				
 	}
-	
-	// Use this for initialization
-	protected override void Start () {
+    
+    // Use this for initialization
+    protected override void Start () {
 		base.Start();
 
-		//rb.drag = 100;
-
-		PlayerActor = actor as Player;
+		PlayerActor = Actor as Player;
 	}
 
-	// Update is called once per frame
-	protected override void Update () {
+    public void Initialize(Action<int, int> onUpdateJumpsAction, Action onPlayerDeath)
+    {
+        _onPlayerDeathAction += onPlayerDeath;
+        _onUpdateJumpsAction += onUpdateJumpsAction;
+    }
+
+
+    // Update is called once per frame
+    protected override void Update () {
 		base.Update();
 
-		if (currentCharacterState.animationType == CharacterAnimationType.RUN && PlayerActor.isTouchingFloor == false) {
-			SetState(CharacterAnimationType.JUMP);
-		}
-		else if (currentCharacterState.animationType == CharacterAnimationType.JUMP && PlayerActor.isTouchingFloor == true) {
-			SetState(CharacterAnimationType.RUN);
-		}
+		switch (currentCharacterState.animationType)
+        {
+            case CharacterAnimationType.Running:
+                if (!PlayerActor.IsTouchingFloor)
+                {
+                    SetState(CharacterAnimationType.Jumping);
+                }
+                break;
+            case CharacterAnimationType.Jumping:
+                if (PlayerActor.IsTouchingFloor)
+                {
+                    SetState(CharacterAnimationType.Running);
+                }
+                break;
+            case CharacterAnimationType.Idling:
+                break;
+            case CharacterAnimationType.Dead:
+                break;
+            case CharacterAnimationType.Falling:
+                break;
+            default:
+                Debug.Log(currentCharacterState.animationType);
+                throw new ArgumentOutOfRangeException();
+        }
 
         //anim.speed = rb.velocity.x + Mathf.Abs(world.BASE_SPEED.x * world.BASE_SPEED_ANIM_MULTIPLIER);
 
         //currentPlayableAnimation.speed = rb.velocity.x + Mathf.Abs(world.BASE_SPEED.x * world.BASE_SPEED_ANIM_MULTIPLIER);
 
         // The player is invincible before he enters the screen
-        if (transform.position.x > world.SCREEN_LEFT) {
-			PlayerActor.isInvincible = false;
+        if (transform.position.x > World.ScreenModel.ScreenLeft) {
+			PlayerActor.IsInvincible = false;
 		}
 
+
+    }
+
+    public void RunToLevelFinish(float horizontalVelocity)
+    {
+        PlayerActor.StableXPosition = World.ScreenModel.ScreenRight * 1.5f;
+        PlayerActor.RecomposeXSpeed *= 1.1f;
+
+        RigidBody.velocity = new Vector2(horizontalVelocity, RigidBody.velocity.y) + dynamicVelocity;
+
+        PlayerActor.IsInvincible = true;
 
     }
 
@@ -61,87 +95,87 @@ public class PlayerComponent : CharacterComponent {
 	protected override void FixedUpdate () {
 		base.FixedUpdate();
 
-        float distance = PlayerActor.stableXPosition - transform.position.x;
-        float vel_x = PlayerActor.recomposeXSpeed * distance / PlayerActor.recomposeDistance;
+        var distance = PlayerActor.StableXPosition - transform.position.x;
+        var horizontalVelocity = PlayerActor.RecomposeXSpeed * distance / PlayerActor.RecomposeDistance;
 
-        if (!world.LevelCompleted) {
+        if (!World.LevelCompleted) {
 
-            if (transform.position.x < PlayerActor.stableXPosition && PlayerActor.isTouchingFloor) {
+            if (transform.position.x < PlayerActor.StableXPosition && PlayerActor.IsTouchingFloor) {
 
-                rb.velocity = new Vector2(vel_x, rb.velocity.y) + dynamicVelocity;
+                RigidBody.velocity = new Vector2(horizontalVelocity, RigidBody.velocity.y) + dynamicVelocity;
 
             } else {
-                rb.velocity = new Vector2(0, rb.velocity.y) + dynamicVelocity;
+                RigidBody.velocity = new Vector2(0, RigidBody.velocity.y) + dynamicVelocity;
             }
 
         } else{
-
-           
-
+            /*
             // RUN TO LEVEL FINISH
-            PlayerActor.stableXPosition = world.SCREEN_RIGHT * 1.5f;
-            PlayerActor.recomposeXSpeed *= 1.1f;
-
-            rb.velocity = new Vector2(vel_x, rb.velocity.y) + dynamicVelocity;
-
-            PlayerActor.isInvincible = true;
+            
+            */
 
         }
 
-        dynamicVelocity = Vector2.MoveTowards (dynamicVelocity, Vector2.zero, PlayerActor.dynamicVelocityAdjust);
+        dynamicVelocity = Vector2.MoveTowards (dynamicVelocity, Vector2.zero, PlayerActor.DynamicVelocityAdjust);
 
+        /*
         // FINISHES LEVEL
-        if (world.LevelCompleted && transform.position.x > world.SCREEN_RIGHT * 1.2f) {
+        if (World.LevelCompleted && transform.position.x > World.ScreenModel.ScreenRight * 1.2f) {
 
-            world.finishLevel();
+            World.FinishLevel();
 
             GameObject.Destroy(gameObject);
         }
+        */
 
-        if (!PlayerActor.isInvincible &&
-            (transform.position.x < world.SCREEN_DEATH_X || transform.position.y < world.SCREEN_DEATH_Y)) {
+        if (PlayerActor.IsInvincible ||
+            (!(transform.position.x < World.ScreenModel.ScreenDeathX) && !(transform.position.y < World.ScreenModel.ScreenDeathY)))
+            return;
 
-            //world.BASE_SPEED = Vector2.zero;
-            //rb.velocity = Vector2.zero;
+        //world.BASE_SPEED = Vector2.zero;
+        //rb.velocity = Vector2.zero;
 
-            playerDeath();
-            playerDiedCallback();
+        _onPlayerDeathAction();
 
-            world.StopMoving();
+        World.StopMoving();
 
-            GameObject.Destroy(gameObject);
-
-        }
+        GameObject.Destroy(gameObject);
 
 
     }
 
 	
-	public void PlayerJump(){
-		
-		if (PlayerActor.Jumps > 0){
+	public void PlayerJump()
+    {
+        if (PlayerActor.AvailableJumps <= 0)
+            return;
 
-			//rb.drag = 0;
-
-			rb.velocity = new Vector2(rb.velocity.x, 0);
-			rb.AddForce(PlayerActor.jumpForce);
+        RigidBody.velocity = new Vector2(RigidBody.velocity.x, 0);
+        RigidBody.AddForce(PlayerActor.JumpForce);
 			
-			PlayerActor.Jumps--;
+        PlayerActor.AvailableJumps--;
 
-            jumpChange(PlayerActor.Jumps);
-
-        }
+        _onUpdateJumpsAction(PlayerActor.AvailableJumps, PlayerActor.MaxJumps);
 
 
-	}
-	
-	protected override void OnCollisionEnter2D(Collision2D collision){
+    }
+
+    public void PlayerSlam()
+    {
+        if (PlayerActor.IsTouchingFloor)
+            return;
+
+        RigidBody.velocity = new Vector2(RigidBody.velocity.x, 0);
+        RigidBody.AddForce(PlayerActor.SlamForce);
+    }
+
+    protected override void OnCollisionEnter2D(Collision2D collision){
 		base.OnCollisionEnter2D(collision);
 
 		// HIT ENEMY
 		if (collision.gameObject.tag == "ENEMY") {
 
-            if (PlayerActor.isInvincible) {
+            if (PlayerActor.IsInvincible) {
                 Physics2D.IgnoreCollision(collision.gameObject.GetComponent<Collider2D>(), this.GetComponent<Collider2D>());
                 return;
 
@@ -152,16 +186,16 @@ public class PlayerComponent : CharacterComponent {
 			if (contactNormal.y >= 0.5) {
 
                 ActionJump (1.5f);
-				PlayerActor.Jumps += 1;
+				PlayerActor.AvailableJumps += 1;
 
-                jumpChange(PlayerActor.Jumps);
+                _onUpdateJumpsAction(PlayerActor.AvailableJumps, PlayerActor.MaxJumps);
 
                 //collision.gameObject.SendMessage ("Kill");
 
 			} 
 
 			else if (contactNormal.x <= 0.5) {
-				dynamicVelocity.x = collision.gameObject.GetComponent<EnemyComponent>().enemy.collisionPullbackVelocity;
+				dynamicVelocity.x = collision.gameObject.GetComponent<EnemyComponent>().enemy.CollisionPullbackVelocity;
 			}
 
 		}
@@ -169,12 +203,14 @@ public class PlayerComponent : CharacterComponent {
 		// HIT FLOOR
 		if (collision.gameObject.tag == "FLOOR" || collision.gameObject.tag == "PLATFORM"  ){
 					
-			// Get a jump if the player jump on the top of a floor
+			// if the player hits the top of a floor
 			if (getContactNormal(collision).y >= 0.75){
-				PlayerActor.Jumps = PlayerActor.maxJumps;
 
-                jumpChange(PlayerActor.Jumps);
-                //rb.drag = 1000;
+                // Recharge Jumps
+				PlayerActor.AvailableJumps = PlayerActor.MaxJumps;
+                _onUpdateJumpsAction(PlayerActor.AvailableJumps, PlayerActor.MaxJumps);
+
+                // Recharge Slams
             }
 		
 		}
@@ -230,8 +266,10 @@ public class PlayerComponent : CharacterComponent {
 
     public void registerCharacterDiedCallback(Action action) {
 
-        playerDiedCallback += action;
+        _onPlayerDeathAction += action;
 
     }
 
+
+    
 }

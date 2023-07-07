@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Assets.Scripts.Model;
 using UnityEngine.Playables;
 using UnityEngine.Animations;
 
@@ -55,7 +56,7 @@ public class CharacterComponent : ActorComponent {
 	protected override void Start () {
 		base.Start ();
 
-		character = actor as Character;
+		character = Actor as Character;
 
         //playableGraph = PlayableGraph.Create();
         //playableGraph.SetTimeUpdateMode(DirectorUpdateMode.GameTime);
@@ -66,7 +67,7 @@ public class CharacterComponent : ActorComponent {
 
 		//Bounds bounds = getBounds ();
 
-		BoxCollider2D collider = colls [0] as BoxCollider2D;
+		BoxCollider2D collider = Colliders [0] as BoxCollider2D;
 		Vector2 offset = collider.offset;
 
 		characterRays.Add("floorCast", new CharacterRay (
@@ -136,10 +137,10 @@ public class CharacterComponent : ActorComponent {
 
 	public void Flip(){
 
-		character.direction = -character.direction;
+		character.Direction = -character.Direction;
 
 		transform.localScale = new Vector3(
-			transform.localScale.x * character.direction,
+			transform.localScale.x * character.Direction,
 			transform.localScale.y,
 			transform.localScale.z
 		);
@@ -153,8 +154,8 @@ public class CharacterComponent : ActorComponent {
 	protected override void Update () {
 		base.Update ();
 
-		character.isTouchingFloor = Raycast("floorCast");
-		character.isOnCliff = Raycast("cliffCast");
+		character.IsTouchingFloor = Raycast("floorCast");
+		character.IsOnCliff = Raycast("cliffCast");
 	}
 
 	// Update is called once per frame
@@ -162,10 +163,10 @@ public class CharacterComponent : ActorComponent {
 		base.FixedUpdate();
 	
 		// update character's gravity scale
-		if (!character.isTouchingFloor && rb.velocity.y < 0) {
-			rb.gravityScale = character.gravityScaleFalling;
+		if (!character.IsTouchingFloor && RigidBody.velocity.y < 0) {
+			RigidBody.gravityScale = character.GravityScaleFalling;
 		} else {
-			rb.gravityScale = character.gravityScaleBase;
+			RigidBody.gravityScale = character.GravityScaleBase;
 		}
 
 	}
@@ -179,7 +180,7 @@ public class CharacterComponent : ActorComponent {
 
     public void ActionJump(float multiplier = 1f){
 
-		rb.AddForce( (actor as Character).jumpForce * multiplier);
+		RigidBody.AddForce( (Actor as Character).JumpForce * multiplier);
 
 	}
 
@@ -190,8 +191,8 @@ public class CharacterComponent : ActorComponent {
 
 		Vector2 trvc2 = transform.position;
 
-		Vector2 rayOrigin = characterRay.origin * character.direction + trvc2 ; 
-		Vector2 rayDirection = characterRay.direction * character.direction  + rayOrigin; 
+		Vector2 rayOrigin = characterRay.origin * character.Direction + trvc2 ; 
+		Vector2 rayDirection = characterRay.direction * character.Direction  + rayOrigin; 
 
 		characterRay.raycast = Physics2D.Linecast (rayOrigin, rayDirection, 1 <<  Layers.FLOORS);
 

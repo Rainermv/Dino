@@ -10,7 +10,7 @@ public class Prop : Actor {
             type = Random.Range(0, 8);
         }
 
-        this.depth = 1;
+        this.sortingOrder = 1;
 
         this.name = "Prop" + type;
         this.spriteKey = "Props/prop" + type;

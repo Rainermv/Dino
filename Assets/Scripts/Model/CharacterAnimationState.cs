@@ -1,4 +1,5 @@
 ﻿using System;
+using Assets.Scripts.Model;
 using UnityEngine;
 
 public class CharacterAnimationState

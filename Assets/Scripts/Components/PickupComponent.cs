@@ -21,7 +21,7 @@ public class PickupComponent : ActorComponent
     // Use this for initialization
     protected override void Start()
     {
-        pickup = actor as Pickup;
+        pickup = Actor as Pickup;
 
         StartCoroutine(RoutineTranslateAnimation());
 

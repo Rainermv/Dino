@@ -1,47 +1,26 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System;
 
-public class Level  {
+namespace Assets.Scripts.Model
+{
+    
+    [Serializable]
+    public class Level  {
 
-    private int distanceTarget;
-    private int number;
+        public float EnemySpawnChancePlatforms = 1f;
+        public float EnemySpawnChanceGround = 1f;
 
-    private bool active = true;
+        public float PickupSpawnChancePlatforms = 0.5f;
+        public float PickupSpawnChanceGround = 0.2f;
 
-    public Level(int _distanceTarget, int _number) {
+        public int Number;
 
-        this.DistanceTarget = _distanceTarget;
-        this.Number = _number;
+        public float AirPlatformGapMin;
+        public float AirPlatformGapMax;
 
-    }
+        [NonSerialized]
+        public bool Initialized = false;
 
-    public int DistanceTarget {
-        get {
-            return distanceTarget;
-        }
-
-        set {
-            distanceTarget = value;
-        }
-    }
-
-    public int Number {
-        get {
-            return number;
-        }
-
-        set {
-            number = value;
-        }
-    }
-
-    public bool Active {
-        get {
-            return active;
-        }
-
-        set {
-            active = value;
-        }
+        public int ActiveLength;
+        public int GapLength;
     }
 }

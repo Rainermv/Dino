@@ -1,17 +1,34 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Net.Http.Headers;
+using Assets.Scripts.Model;
+using Assets.Scripts.UI;
+using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using System.Collections;
+using UnityEngine.UIElements;
 
+namespace Assets.Scripts.Controllers
+{
+    public class EventTriggerHelper
+    {
+        public static void AddListenerToEventTrigger(EventTrigger eventTrigger, EventTriggerType eventTriggerType, Action action)
+        {
+            var entry = new EventTrigger.Entry
+                {callback = new EventTrigger.TriggerEvent(), eventID = eventTriggerType};
+            entry.callback.AddListener(eventData => action());
+            eventTrigger.triggers.Add(entry);
+        }
+    }
 
-public class PlayerController : MonoBehaviour {
+    public class PlayerController : MonoBehaviour {
 
-    private PlayerComponent playerAvatar;
+        private World _world;
 
-    private UIController uiController;
+        public bool UseMouse;
+        public EventTrigger LeftTrigger;
+        public EventTrigger RightTrigger;
 
-    private World world;
-
-    /*
+        /*
    public GameObject UIJumps;
 
 
@@ -29,58 +46,73 @@ public class PlayerController : MonoBehaviour {
    public Slider UIDistanceTargetSlider;
    */
 
-    public PlayerComponent PlayerAvatar {
-		get {
-			return playerAvatar;
-		}
-		set {
-			playerAvatar = value;
-		}
-	}
-	
-	void Awake(){
+        public PlayerComponent PlayerComponent { get; set; }
 
-        world = World.GetInstance();
+        void Awake(){
 
-        uiController = FindObjectOfType<UIController>();
+            _world = World.GetInstance();
+
+        }
+
+        // Use this for initialization
+        public void Initialize(PlayerComponent playerComponent, Action<int, int> updateJumpsAction,
+            Action onPlayerDeathAction)
+        {
+
+            PlayerComponent = playerComponent;
+
+            PlayerComponent.Initialize(updateJumpsAction, onPlayerDeathAction);
+           
+
+            if (UseMouse)
+                return;
+
+            EventTriggerHelper.AddListenerToEventTrigger(LeftTrigger, EventTriggerType.PointerDown, LeftButtonTouch);
+            EventTriggerHelper.AddListenerToEventTrigger(RightTrigger, EventTriggerType.PointerDown, RightButtonTouch);
 
 
+        }
+
+
+        private void LeftButtonTouch()
+        {
+            PlayerComponent.PlayerJump();
+        }
+
+        private void RightButtonTouch()
+        {
+            PlayerComponent.PlayerSlam();
+
+        }
+
+        // Update is called once per frame
+        void Update () {
+		    
+            if (UseMouse)
+                HandleMouseButtons();
+        }
+
+        public void HandleMouseButtons()
+        {
+
+            if (PlayerComponent == null)
+                return;
+
+            if (Input.GetMouseButtonDown(0))
+            {
+                LeftButtonTouch();
+                return;
+            }
+
+            if (Input.GetMouseButtonDown(1))
+            {
+                RightButtonTouch();
+                return;
+            }
+            
+        }
+
+
+        
     }
-
-	// Use this for initialization
-	void Start () {
-
-        playerAvatar.jumpChange += delegate (int jumps) { 
-            uiController.UpdateJumps(jumps);
-        };
-
-        playerAvatar.playerDeath += delegate () {
-            uiController.OnPlayerDeath();
-        };
-
-        playerAvatar.registerCharacterDiedCallback(() => {
-            playerAvatar = null;
-        });
-
-
-    }
-	
-	// Update is called once per frame
-	void Update () {
-		
-		HandleTouches();
-    }
-	
-	void HandleTouches(){
-		
-		if (Input.GetMouseButtonDown(0) && playerAvatar != null && !world.LevelCompleted){
-			
-			Vector3 position = Input.mousePosition;
-			playerAvatar.PlayerJump();
-		}
-	}
-
-
-
-    
 }

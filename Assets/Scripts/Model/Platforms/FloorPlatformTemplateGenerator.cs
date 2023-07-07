@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using Assets.Scripts.Model;
 
 public enum FloorPlatformType {
 
@@ -20,7 +21,7 @@ public class FloorPlatformTemplateGenerator  {
 	private FloorPlatformTemplateGenerator(){
 
 
-		Generate (World.GetInstance().FLOOR_PLATFORM_SIZE);
+		Generate (World.GetInstance().FloorPlatformSize);
 	}
 	public static FloorPlatformTemplateGenerator getInstance(){
 		if (instance == null){

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Assets.Scripts.Model;
 
 public class Bumper : Character {
 
@@ -13,7 +14,7 @@ public class Bumper : Character {
         this.tag = "ENEMY";
         this.layer = this.layer = Layers.CHARACTERS;
 
-        this.depth = 5;
+        this.sortingOrder = 5;
 
         //this.tint = Color.white;
 
@@ -21,14 +22,14 @@ public class Bumper : Character {
         //this.spriteKey = "Bumper/base" + Random.Range(0, BASES);
 
         this.spriteKey = "Bumper/Base0";
-        addCharacterState(CharacterAnimationType.RUN, "default", Vector2.zero);
-        addCharacterState(CharacterAnimationType.JUMP, "default", Vector2.zero);
-        addCharacterState(CharacterAnimationType.IDLE, "default", Vector2.zero);
-        addCharacterState(CharacterAnimationType.DEAD, "default", Vector2.zero);
+        AddCharacterState(CharacterAnimationType.Running, "default", Vector2.zero);
+        AddCharacterState(CharacterAnimationType.Jumping, "default", Vector2.zero);
+        AddCharacterState(CharacterAnimationType.Idling, "default", Vector2.zero);
+        AddCharacterState(CharacterAnimationType.Dead, "default", Vector2.zero);
 
         SpriteComposition face = new SpriteComposition("Bumper/Face" + Random.Range(0, FACES), 6);
-        face.addState(CharacterAnimationType.FALLING, "Bumper/FaceFalling");
-        face.addState(CharacterAnimationType.DEAD, "Bumper/FaceColliding");
+        face.addState(CharacterAnimationType.Falling, "Bumper/FaceFalling");
+        face.addState(CharacterAnimationType.Dead, "Bumper/FaceColliding");
 
         face.constrainRotation = true;
         face.constrainMovement = true;
@@ -48,11 +49,11 @@ public class Bumper : Character {
         float offsetY = 0f;
         //float offset_x = -0.3f;
 
-        setCollider(new Vector2(width, height), new Vector2(offsetX, offsetY), "Enemy");
+        SetCollider(new Vector2(width, height), new Vector2(offsetX, offsetY), "Enemy");
 
         this.startingPosition = new Vector2(
-            world.SCREEN_LEFT - 2,
-            world.FLOOR_Y + height
+            world.ScreenModel.ScreenLeft - 2,
+            world.ScreenModel.FloorY + height
         );
 
         this.isKinematic = false;
@@ -63,8 +64,8 @@ public class Bumper : Character {
         constrainMovement = false;
         constrainRotation = true;
 
-        jumpForce = new Vector2(0, 0);
+        JumpForce = new Vector2(0, 0);
 
-        collisionPullbackVelocity = -20f;
+        CollisionPullbackVelocity = -20f;
     }
 }

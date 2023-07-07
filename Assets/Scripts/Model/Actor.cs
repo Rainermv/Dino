@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using Assets.Scripts.Model;
 
 
 public abstract class Actor {
@@ -22,7 +23,7 @@ public abstract class Actor {
 	
 	public string name = "Generic Actor";
 	public string spriteKey = "default";
-	public int depth = 0;
+	public int sortingOrder = 0;
 
 	public Vector2 scale = new Vector2(1,1);
 

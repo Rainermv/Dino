@@ -6,7 +6,7 @@ public class Background : Actor {
 	public Background(){
 
 		spriteKey = "Background/BG";
-		depth = 0;
+		sortingOrder = 0;
 
         name = "Background";
         indestructable = true;

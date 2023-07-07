@@ -1,12 +1,13 @@
-﻿using System;
-
-public enum CharacterAnimationType
+﻿namespace Assets.Scripts.Model
 {
-	RUN,
-	JUMP,
-	IDLE,
-	DEAD,
-    FALLING,
+    public enum CharacterAnimationType
+    {
+        Running,
+        Jumping,
+        Idling,
+        Dead,
+        Falling,
+    }
 }
 
 

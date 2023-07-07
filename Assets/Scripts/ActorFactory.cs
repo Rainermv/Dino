@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Assets.Scripts.Model;
+
 //using UnityEngine.Director;
 
 public class ActorFactory  {
@@ -167,31 +169,31 @@ public class ActorFactory  {
 
     }
 
-	public ActorComponent buildAirPlatform(){
+	public ActorComponent buildAirPlatform(PlatformGenerationStrategy platformGenerationStrategy){
 
-		return buildPlatform(Platform.AerialPlatform());
+		return buildPlatform(Platform.AerialPlatform(platformGenerationStrategy));
 
 	}
 
 	public ActorComponent buildGroundPlatform(FloorPlatformType type, float xPosition){
 
-        ActorComponent platform = this.buildPlatform(Platform.FloorPlatform(type, xPosition));
+        var platform = this.buildPlatform(Platform.FloorPlatform(type, xPosition));
 
         return platform;
 	}
 
 	private ActorComponent buildPlatform(Platform platformModel){
 				
-		GameObject actorGameObject = createGameObject(platformModel);
+		var actorGameObject = createGameObject(platformModel);
 
-		foreach (PlatformTile tile in platformModel.tiles){
+		foreach (var tile in platformModel.tiles){
 			
-			GameObject tileGameObject = new GameObject();
+			var tileGameObject = new GameObject();
 			tileGameObject.name = "platform tile - " + tile.tileId;
 
-			SpriteRenderer sr = tileGameObject.AddComponent<SpriteRenderer>();
+			var sr = tileGameObject.AddComponent<SpriteRenderer>();
 			sr.sprite = Resources.Load<Sprite> ("Sprites/Tiles/" + tile.tileId);
-			sr.sortingOrder = platformModel.depth;
+			sr.sortingOrder = platformModel.sortingOrder;
 
 			tileGameObject.transform.parent = actorGameObject.transform;
 			tileGameObject.transform.localPosition = tile.position;
@@ -207,7 +209,7 @@ public class ActorFactory  {
             addEffector2D(actorGameObject, effector);
         }
 
-		Rigidbody2D rb = addRigidbody2D(actorGameObject, platformModel);
+		var rb = addRigidbody2D(actorGameObject, platformModel);
 
 		return addActorComponent(actorGameObject, platformModel);
 
@@ -279,7 +281,7 @@ public class ActorFactory  {
 
 		//sr.sprite = null;
 		sr.color = actor.tint;
-		sr.sortingOrder = actor.depth;
+		sr.sortingOrder = actor.sortingOrder;
 
 		return sr;
 
@@ -391,7 +393,7 @@ public class ActorFactory  {
 	private ActorComponent addActorComponent(GameObject obj, Actor actor){
 
 		ActorComponent act = obj.AddComponent<ActorComponent>();
-		act.actor = actor;
+		act.Actor = actor;
 		//act.actor.id = id++;
 
 		return act;
@@ -401,7 +403,7 @@ public class ActorFactory  {
 	private EnemyComponent addEnemyComponent(GameObject obj, Character actorEnemy){
 
 		EnemyComponent ec = obj.AddComponent<EnemyComponent>();
-		ec.actor = actorEnemy;
+		ec.Actor = actorEnemy;
 		//el.actor.id = id++;
 
 		return ec;
@@ -411,7 +413,7 @@ public class ActorFactory  {
     private PickupComponent addPickupComponent(GameObject obj, Pickup actorPickup) {
 
         PickupComponent pickupComponent = obj.AddComponent<PickupComponent>();
-        pickupComponent.actor = actorPickup;
+        pickupComponent.Actor = actorPickup;
 
         return pickupComponent;
     }
@@ -419,7 +421,7 @@ public class ActorFactory  {
 	private PlayerComponent addPlayerComponent(GameObject obj, Player actorPlayer){
 
 		PlayerComponent pl = obj.AddComponent<PlayerComponent>();
-		pl.actor = actorPlayer;
+		pl.Actor = actorPlayer;
 
 		return pl;
 
